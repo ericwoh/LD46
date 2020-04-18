@@ -4,6 +4,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+
+// The 'physical/heavy' representation of a critter in our game'
+public class CritterSettings : MonoBehaviour
+{
+    public GameObject _critterPrefab;
+}
+
 public class Critter
 {
     public int _id;
@@ -40,10 +47,11 @@ public class Critter
     }
 }
 
-public class Critters 
+public class Critters
 {
-    public Critters(JobManager jobManager)
+    public Critters(CritterSettings critterSettings, JobManager jobManager)
     {
+        m_critterSettings = critterSettings;
         m_jobManager = jobManager;
         m_critters = new List<Critter>();
         for (int i = 0; i < 10; ++i)
@@ -72,4 +80,5 @@ public class Critters
 
     private List<Critter> m_critters;
     private JobManager m_jobManager;
+    private CritterSettings m_critterSettings;
 }
