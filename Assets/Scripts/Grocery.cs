@@ -36,7 +36,7 @@ public class Grocery : MonoBehaviour
     void Start()
     {
         //_desk = DESIGNATIONK.None;
-        _jobm = GameObject.Find("JobManager").GetComponent<JobManager>();
+        _jobm = GameObject.Find("Game Manager").GetComponent<Game>()._jobManager;
         _job = null;
     }
 

@@ -40,7 +40,7 @@ public class Critter
     }
 }
 
-public class Critters : MonoBehaviour
+public class Critters 
 {
     public Critters(JobManager jobManager)
     {
