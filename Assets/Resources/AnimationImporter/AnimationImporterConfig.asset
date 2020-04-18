@@ -9,13 +9,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5d52663f1e64b4a539cad6cb8f3e65ed, type: 3}
+  m_Script: {fileID: 11500000, guid: 9a77c8bb26c86e94a89ecfcd3d7fd79a, type: 3}
   m_Name: AnimationImporterConfig
   m_EditorClassIdentifier: 
   _animationNamesThatDoNotLoop:
   - death
   _automaticImporting: 0
-  _spritePixelsPerUnit: 100
+  _spritePixelsPerUnit: 16
   _targetObjectType: 0
   _spriteAlignment: 7
   _spriteAlignmentCustomX: 0

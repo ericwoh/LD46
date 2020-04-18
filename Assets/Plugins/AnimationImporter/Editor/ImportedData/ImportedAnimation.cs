@@ -1,18 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using System;
-using System.Linq;
 
 namespace AnimationImporter
 {
-	public enum PlaybackDirection
-	{
-		Forward, // default
-		Reverse, // reversed frames
-		PingPong // forward, then reverse
-	}
-
 	public class ImportedAnimation
 	{
 		public string name;
@@ -20,6 +11,9 @@ namespace AnimationImporter
 		public ImportedAnimationFrame[] frames = null;
 
 		public bool isLooping = true;
+
+		// duration of each frame
+		private List<float> timings = null;
 
 		// final animation clip; saved here for usage when building the AnimatorController
 		public AnimationClip animationClip;
@@ -31,9 +25,6 @@ namespace AnimationImporter
 		// assuming all sprites are in some array/list and an animation is defined as a continous list of indices
 		public int firstSpriteIndex;
 		public int lastSpriteIndex;
-
-		// unity animations only play forward, so this will affect the way frames are added to the final animation clip
-		public PlaybackDirection direction;
 
 		// used with the indices because we to not have the Frame array yet
 		public int Count
@@ -48,23 +39,44 @@ namespace AnimationImporter
 		//  public methods
 		// --------------------------------------------------------------------------------
 
-		/// <summary>
-		/// Lists frames so that the final anim seems to play in the desired direction.
-		/// *Attention:* Can return more than <see cref="Count"/> frames. 
-		/// </summary>
-		public IEnumerable<ImportedAnimationFrame> ListFramesAccountingForPlaybackDirection()
+		public void SetFrames(ImportedAnimationFrame[] frames)
 		{
-			switch (direction)
+			this.frames = frames;
+
+			CalculateKeyFrameTimings();
+		}
+
+		// ================================================================================
+		//  Key Frames
+		// --------------------------------------------------------------------------------
+
+		public float GetKeyFrameTime(int i)
+		{
+			return timings[i];
+		}
+
+		public float GetLastKeyFrameTime(float frameRate)
+		{
+			float timePoint = GetKeyFrameTime(Count);
+			timePoint -= (1f / frameRate);
+
+			return timePoint;
+		}
+
+		private void CalculateKeyFrameTimings()
+		{
+			float timeCount;
+			timings = new List<float>();
+
+			// first sprite will be set at the beginning of the animation
+			timeCount = 0;
+			timings.Add(timeCount);
+
+			for (int k = 0; k < frames.Length; k++)
 			{
-				default:
-				case PlaybackDirection.Forward: // ex: 1, 2, 3, 4
-					return frames;
-
-				case PlaybackDirection.Reverse: // ex: 4, 3, 2, 1
-					return frames.Reverse();
-
-				case PlaybackDirection.PingPong: // ex: 1, 2, 3, 4, 3, 2
-					return frames.Concat(frames.Skip(1).Take(frames.Length - 2).Reverse());
+				// add duration of frame in seconds
+				timeCount += frames[k].duration / 1000f;
+				timings.Add(timeCount);
 			}
 		}
 	}
