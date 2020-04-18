@@ -10,6 +10,30 @@ public class ShelfPos // tag = spos
     public float _uPos; // 0..1 value, 0 being max left of shelf, 1 being full right
 }
 
+public enum JOBK // tag = jobk
+{
+    WarmHome,
+    StoreFood,
+    CollectFood,
+    Build,
+}
+
+public enum RESOURCEK // tag = resk
+{
+    Food,
+    WarmBed,
+    Work, // time?
+}
+
+public enum NEEDK // tag = needk
+{
+    Food,
+    Warmth,
+    // lubrication?
+}
+
+
+
 // Jobs are how the critters interact with groceries
 public class JobSite // tag = job
 {
@@ -28,7 +52,7 @@ public class JobSite // tag = job
         _jobk = jobk;
     }
 
-    public bool FCanFulfillNeed(NEEDK needk)
+    public bool FCanFulfillNeed(NEEDK needk) 
     {
         switch (_jobk)
         {
@@ -73,6 +97,8 @@ public class JobSite // tag = job
     }
 }
 
+
+
 // a discrete unit of work that can be complete by a critter
 public enum TASKK
 {
@@ -83,7 +109,7 @@ public enum TASKK
     // food management
     CollectFood,
     StoreFood,
-
+    
     // construction
     Work,
 }
@@ -91,7 +117,7 @@ public enum TASKK
 public class Task // tag = task
 {
     public TASKK _taskk;
-    public JobSite _job;
+    public JobSite _job; 
 
     public Task(JobSite job, TASKK taskk)
     {
@@ -167,6 +193,25 @@ public class Task // tag = task
     }
 }
 
+public class TestCritter
+{
+    public int _iCritter;
+    public float _tSleep;
+    public float _tSleepDur;
+
+    public List<Task> _lTaskToDo;
+
+    public TestCritter(int iCritter)
+    {
+        _iCritter = iCritter;
+
+        _tSleep = 0.0f;
+        _tSleepDur = UnityEngine.Random.value * 3f + 1f;
+
+        _lTaskToDo = new List<Task>();
+    }
+}
+
 public class JobManager : MonoBehaviour
 {
     List<JobSite> _lJob;
@@ -222,7 +267,7 @@ public class JobManager : MonoBehaviour
             {
                 case JOBK.CollectFood:
                     break;
-
+                
                 case JOBK.WarmHome:
                     break;
 
@@ -295,13 +340,13 @@ public class JobManager : MonoBehaviour
 
 
 
-    List<Critter> _lCritter; // debug only
+    List<TestCritter> _lCritter; // debug only
 
     void Start()
     {
-        _lCritter = new List<Critter>();
+        _lCritter = new List<TestCritter>();
         for (int i = 0; i < 10; ++i)
-            _lCritter.Add(new Critter(i));
+            _lCritter.Add(new TestCritter(i));
 
         _lJob = new List<JobSite>();
         JobSite jobCollectFood = new JobSite(JOBK.CollectFood);
@@ -350,7 +395,7 @@ public class JobManager : MonoBehaviour
 
     void Update()
     {
-        foreach (Critter critter in _lCritter)
+        foreach (TestCritter critter in _lCritter)
         {
             critter._tSleep += Time.deltaTime;
             if (critter._tSleep >= critter._tSleepDur)
@@ -391,7 +436,7 @@ public class JobManager : MonoBehaviour
         if (jobDel != null)
         {
             _lJob.Remove(jobDel);
-
+            
             JobSite jobHousing = new JobSite(JOBK.WarmHome);
             jobHousing._mpReskCRes[RESOURCEK.WarmBed] = 5;
             _lJob.Add(jobHousing);
