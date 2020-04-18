@@ -202,9 +202,29 @@ namespace AnimationImporter
 					continue;
 				}
 
-				AnimationImportJob job = CreateAnimationImportJob(assetPath);
-				job.importAnimatorController = importAnimatorController;
-				jobs.Add(job);
+                // DDobyns change to support adding to existing Animator Override Controller on manual import
+                AnimationImportJob job = CreateAnimationImportJob(assetPath);
+                if (job != null)
+                {
+                    if (HasExistingAnimatorController(assetPath))
+                    {
+                        job.importAnimatorController = ImportAnimatorController.AnimatorController;
+                    }
+                    else if (HasExistingAnimatorOverrideController(assetPath))
+                    {
+                        job.importAnimatorController = ImportAnimatorController.AnimatorOverrideController;
+                        job.useExistingAnimatorController = true;
+                    }
+
+                    jobs.Add(job);
+                }
+
+
+
+    //            AnimationImportJob job = CreateAnimationImportJob(assetPath);
+				//job.importAnimatorController = importAnimatorController;
+    //            //job.useExistingAnimatorController = true;   /// DDobyns test for adding to existing
+				//jobs.Add(job);
 			}
 
 			Import(jobs.ToArray());
@@ -360,10 +380,19 @@ namespace AnimationImporter
 		{
 			AnimatorOverrideController overrideController;
 
-			string directory = sharedData.animationControllersTargetLocation.GetAndEnsureTargetDirectory(animations.assetDirectory);
+            string directory = sharedData.animationControllersTargetLocation.GetAndEnsureTargetDirectory(animations.assetDirectory);
+
+            // attempt to ignore characters in master name after _ character
+            string newName = animations.name.Split('_')[0];
+
+            ///NOTE - DDobyns experiment to fix animation naming issues
+            ///string fileName = basePath + "/" + masterName + "_" + anim.name + ".anim";   // original behavior is this line
+            //string fileName = directory + "/" + newName + "_" + anim.name + ".anim";      // DDobyns fix is this line
+
 
 			// check if override controller already exists; use this to not loose any references to this in other assets
-			string pathForOverrideController = directory + "/" + animations.name + ".overrideController";
+			//string pathForOverrideController = directory + "/" + animations.name + ".overrideController";
+            string pathForOverrideController = directory + "/" + newName + ".overrideController";
 			overrideController = AssetDatabase.LoadAssetAtPath<AnimatorOverrideController>(pathForOverrideController);
 
 			RuntimeAnimatorController baseController = _baseController;
@@ -391,7 +420,8 @@ namespace AnimationImporter
 				{
 					string animationName = pair.Key.name;
 					AnimationClip clip = animations.GetClipOrSimilar(animationName);
-					overrideController[animationName] = clip;
+                    if (clip != null)
+					    overrideController[animationName] = clip;
 				}
 #else
 				var clipPairs = overrideController.clips;
@@ -541,33 +571,6 @@ namespace AnimationImporter
 			return false;
 		}
 
-		// check if there is a configured importer for the specified extension
-		public static bool IsConfiguredForAssets(DefaultAsset[] assets)
-		{
-			foreach(var asset in assets)
-			{
-				string assetPath = AssetDatabase.GetAssetPath(asset);
-				string extension = GetExtension(assetPath);
-
-				if (!string.IsNullOrEmpty(assetPath))
-				{
-					if (_importerPlugins.ContainsKey(extension))
-					{
-						IAnimationImporterPlugin importer = _importerPlugins[extension];
-						if (importer != null)
-						{
-							if(!importer.IsConfigured())
-							{
-								return false;
-							}
-						}
-					}
-				}
-			}
-
-			return true;
-		}
-
 		private static string GetExtension(string path)
 		{
 			if (string.IsNullOrEmpty(path))
@@ -625,10 +628,15 @@ namespace AnimationImporter
 		public AnimatorOverrideController GetExistingAnimatorOverrideController(string assetPath)
 		{
 			string name = Path.GetFileNameWithoutExtension(assetPath);
-			string basePath = GetBasePath(assetPath);
+
+            ///NOTE - DDobyns experiment to fix animation naming issues
+            // Ignore characters in master name after _ character
+            string newName = name.Split('_')[0];
+
+            string basePath = GetBasePath(assetPath);
 			string targetDirectory = sharedData.animationControllersTargetLocation.GetTargetDirectory(basePath);
 
-			string pathForController = targetDirectory + "/" + name + ".overrideController";
+			string pathForController = targetDirectory + "/" + newName + ".overrideController";
 			AnimatorOverrideController controller = AssetDatabase.LoadAssetAtPath<AnimatorOverrideController>(pathForController);
 
 			return controller;

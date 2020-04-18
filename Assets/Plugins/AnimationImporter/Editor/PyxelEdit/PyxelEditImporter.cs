@@ -39,11 +39,6 @@ namespace AnimationImporter.PyxelEdit
 			return IonicZipDllIsPresent();
 		}
 
-		public bool IsConfigured()
-		{
-			return true;
-		}
-
 		private static bool ImportImageAndMetaInfo(AnimationImportJob job)
 		{
 			_latestData = null;
@@ -154,7 +149,7 @@ namespace AnimationImporter.PyxelEdit
 					frames[frameIndex] = frame;
 				}
 
-				importAnimation.frames = frames;
+				importAnimation.SetFrames(frames);
 
 				animationSheet.animations.Add(importAnimation);
 			}

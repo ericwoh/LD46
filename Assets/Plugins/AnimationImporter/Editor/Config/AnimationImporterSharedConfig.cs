@@ -9,8 +9,8 @@ namespace AnimationImporter
 		private const string PREFS_PREFIX = "ANIMATION_IMPORTER_";
 
 		[SerializeField]
-		private List<string> _animationNamesThatDoNotLoop = new List<string>() { "death" };
-		public List<string> animationNamesThatDoNotLoop { get { return _animationNamesThatDoNotLoop; } }
+		private List<string> _animationNamesThatDoNotLoop = new List<string>() {"death"};
+        public List<string> animationNamesThatDoNotLoop { get { return _animationNamesThatDoNotLoop; } }
 
 		[SerializeField]
 		private bool _automaticImporting = false;
