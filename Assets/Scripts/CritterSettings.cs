@@ -8,4 +8,8 @@ using UnityEngine;
 public class CritterSettings : ScriptableObject
 {
     public GameObject _critterPrefab;
+    public GameObject InstantiateCritterBehaviour(Vector3 pos, Quaternion rot)
+    {
+        return Instantiate(_critterPrefab, pos, rot);
+    }
 }
