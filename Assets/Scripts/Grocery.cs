@@ -35,7 +35,7 @@ public class Grocery : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        _desk = DESIGNATIONK.None;
+        //_desk = DESIGNATIONK.None;
         _jobm = GameObject.Find("JobManager").GetComponent<JobManager>();
         _job = null;
     }
@@ -111,8 +111,6 @@ public class Grocery : MonoBehaviour
         }
         else
             text.text += "None\n";
-
-        
     }
 
     // Update is called once per frame

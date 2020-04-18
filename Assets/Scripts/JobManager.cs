@@ -349,48 +349,48 @@ public class JobManager : MonoBehaviour
             _lCritter.Add(new TestCritter(i));
 
         _lJob = new List<JobSite>();
-        JobSite jobCollectFood = new JobSite(JOBK.CollectFood);
-        jobCollectFood._mpReskCRes[RESOURCEK.Food] = 20;
-        _lJob.Add(jobCollectFood);
+        //JobSite jobCollectFood = new JobSite(JOBK.CollectFood);
+        //jobCollectFood._mpReskCRes[RESOURCEK.Food] = 20;
+        //_lJob.Add(jobCollectFood);
 
-        JobSite jobStoreFood = new JobSite(JOBK.StoreFood);
-        _lJob.Add(jobStoreFood);
+        //JobSite jobStoreFood = new JobSite(JOBK.StoreFood);
+        //_lJob.Add(jobStoreFood);
 
-        JobSite jobBuildHousing = new JobSite(JOBK.Build);
-        _lJob.Add(jobBuildHousing);
+        //JobSite jobBuildHousing = new JobSite(JOBK.Build);
+        //_lJob.Add(jobBuildHousing);
     }
 
     void UpdateUiText()
     {
         Text text = _objText.GetComponent<Text>();
         text.text = "";
-        foreach (JOBK jobk in Enum.GetValues(typeof(JOBK)))
-        {
-            foreach (JobSite job in _lJob)
-            {
-                if (job._jobk == jobk)
-                {
-                    switch (job._jobk)
-                    {
-                        case JOBK.CollectFood:
-                            text.text += "Collect Food:  Food: " + job._mpReskCRes[RESOURCEK.Food] + "\n";
-                            break;
+        //foreach (JOBK jobk in Enum.GetValues(typeof(JOBK)))
+        //{
+        //    foreach (JobSite job in _lJob)
+        //    {
+        //        if (job._jobk == jobk)
+        //        {
+        //            switch (job._jobk)
+        //            {
+        //                case JOBK.CollectFood:
+        //                    text.text += "Collect Food:  Food: " + job._mpReskCRes[RESOURCEK.Food] + "\n";
+        //                    break;
 
-                        case JOBK.StoreFood:
-                            text.text += "Store Food:    Food: " + job._mpReskCRes[RESOURCEK.Food] + "\n";
-                            break;
+        //                case JOBK.StoreFood:
+        //                    text.text += "Store Food:    Food: " + job._mpReskCRes[RESOURCEK.Food] + "\n";
+        //                    break;
 
-                        case JOBK.WarmHome:
-                            text.text += "Warm Home:     Beds:  " + job._mpReskCRes[RESOURCEK.WarmBed] + "\n";
-                            break;
+        //                case JOBK.WarmHome:
+        //                    text.text += "Warm Home:     Beds:  " + job._mpReskCRes[RESOURCEK.WarmBed] + "\n";
+        //                    break;
 
-                        case JOBK.Build:
-                            text.text += "Building:      Work:  " + job._mpReskCRes[RESOURCEK.Work] + "\n";
-                            break;
-                    }
-                }
-            }
-        }
+        //                case JOBK.Build:
+        //                    text.text += "Building:      Work:  " + job._mpReskCRes[RESOURCEK.Work] + "\n";
+        //                    break;
+        //            }
+        //        }
+        //    }
+        //}
     }
 
     void Update()
