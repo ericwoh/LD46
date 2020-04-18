@@ -10,6 +10,30 @@ public class ShelfPos // tag = spos
     public float _uPos; // 0..1 value, 0 being max left of shelf, 1 being full right
 }
 
+public enum JOBK // tag = jobk
+{
+    WarmHome,
+    StoreFood,
+    CollectFood,
+    Build,
+}
+
+public enum RESOURCEK // tag = resk
+{
+    Food,
+    WarmBed,
+    Work, // time?
+}
+
+public enum NEEDK // tag = needk
+{
+    Food,
+    Warmth,
+    // lubrication?
+}
+
+
+
 // Jobs are how the critters interact with groceries
 public class JobSite // tag = job
 {
@@ -28,7 +52,7 @@ public class JobSite // tag = job
         _jobk = jobk;
     }
 
-    public bool FCanFulfillNeed(NEEDK needk)
+    public bool FCanFulfillNeed(NEEDK needk) 
     {
         switch (_jobk)
         {
@@ -126,7 +150,7 @@ public class JobManager : MonoBehaviour
             {
                 case JOBK.CollectFood:
                     break;
-
+                
                 case JOBK.WarmHome:
                     break;
 
@@ -204,48 +228,12 @@ public class JobManager : MonoBehaviour
         _critters = new Critters(this);
 
         _lJob = new List<JobSite>();
-        JobSite jobCollectFood = new JobSite(JOBK.CollectFood);
-        jobCollectFood._mpReskCRes[RESOURCEK.Food] = 20;
-        _lJob.Add(jobCollectFood);
-
-        JobSite jobStoreFood = new JobSite(JOBK.StoreFood);
-        _lJob.Add(jobStoreFood);
-
-        JobSite jobBuildHousing = new JobSite(JOBK.Build);
-        _lJob.Add(jobBuildHousing);
     }
 
     void UpdateUiText()
     {
         Text text = _objText.GetComponent<Text>();
         text.text = "";
-        foreach (JOBK jobk in Enum.GetValues(typeof(JOBK)))
-        {
-            foreach (JobSite job in _lJob)
-            {
-                if (job._jobk == jobk)
-                {
-                    switch (job._jobk)
-                    {
-                        case JOBK.CollectFood:
-                            text.text += "Collect Food:  Food: " + job._mpReskCRes[RESOURCEK.Food] + "\n";
-                            break;
-
-                        case JOBK.StoreFood:
-                            text.text += "Store Food:    Food: " + job._mpReskCRes[RESOURCEK.Food] + "\n";
-                            break;
-
-                        case JOBK.WarmHome:
-                            text.text += "Warm Home:     Beds:  " + job._mpReskCRes[RESOURCEK.WarmBed] + "\n";
-                            break;
-
-                        case JOBK.Build:
-                            text.text += "Building:      Work:  " + job._mpReskCRes[RESOURCEK.Work] + "\n";
-                            break;
-                    }
-                }
-            }
-        }
     }
 
     void Update()
@@ -269,7 +257,7 @@ public class JobManager : MonoBehaviour
         if (jobDel != null)
         {
             _lJob.Remove(jobDel);
-
+            
             JobSite jobHousing = new JobSite(JOBK.WarmHome);
             jobHousing._mpReskCRes[RESOURCEK.WarmBed] = 5;
             _lJob.Add(jobHousing);
