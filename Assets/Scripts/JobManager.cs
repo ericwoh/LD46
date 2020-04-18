@@ -73,103 +73,11 @@ public class JobSite // tag = job
     }
 }
 
-// a discrete unit of work that can be complete by a critter
-public enum TASKK
-{
-    // basic needs
-    EatFood,
-    GetWarm,
-
-    // food management
-    CollectFood,
-    StoreFood,
-
-    // construction
-    Work,
-}
-
-public class Task // tag = task
-{
-    public TASKK _taskk;
-    public JobSite _job;
-
-    public Task(JobSite job, TASKK taskk)
-    {
-        _taskk = taskk;
-        _job = job;
-
-        // Claim the resources now so that I'm guaranteed to get it
-        switch (_taskk)
-        {
-            case TASKK.EatFood:
-            case TASKK.CollectFood:
-                {
-                    bool fClaimed = _job.FTryClaimResource(RESOURCEK.Food);
-                    Debug.Assert(fClaimed);
-                    break;
-                }
-
-            case TASKK.GetWarm:
-                {
-                    bool fClaimed = _job.FTryClaimResource(RESOURCEK.WarmBed);
-                    Debug.Assert(fClaimed);
-                    break;
-                }
-
-            case TASKK.StoreFood:
-            case TASKK.Work:
-                break;
-        }
-    }
-
-    public void CancelTask()
-    {
-        // unclaim resources
-        switch (_taskk)
-        {
-            case TASKK.EatFood:
-            case TASKK.CollectFood:
-                _job.GiveResource(RESOURCEK.Food);
-                break;
-
-            case TASKK.GetWarm:
-                _job.GiveResource(RESOURCEK.WarmBed);
-                break;
-
-            case TASKK.StoreFood:
-            case TASKK.Work:
-                break;
-        }
-    }
-
-    public void CompleteTask()
-    {
-        // the critter will need to manage its own meters, this just handles resources
-
-        switch (_taskk)
-        {
-            case TASKK.EatFood:
-            case TASKK.CollectFood:
-                break;
-
-            case TASKK.StoreFood:
-                _job.GiveResource(RESOURCEK.Food);
-                break;
-
-            case TASKK.GetWarm:
-                _job.GiveResource(RESOURCEK.WarmBed);
-                break;
-
-            case TASKK.Work:
-                _job.GiveResource(RESOURCEK.Work);
-                break;
-        }
-    }
-}
-
 public class JobManager : MonoBehaviour
 {
     List<JobSite> _lJob;
+    Critters _critters;
+
     public GameObject _objText;
 
     public void AddJob(JobSite job)
@@ -182,10 +90,7 @@ public class JobManager : MonoBehaviour
         _lJob.Remove(job);
     }
 
-
-
     // If this returns true, the list of tasks is filled out with instructions on how to fulfill the need
-
     public bool FTryFulfillNeed(NEEDK needk, ref List<Task> pLTask)
     {
         foreach (JobSite job in _lJob)
@@ -210,7 +115,6 @@ public class JobManager : MonoBehaviour
     }
 
     // If this returns true, the list of tasks is filled with instructions on work to do for the player
-
     public bool FTryGetWork(ref List<Task> pLTask)
     {
         pLTask.Clear();
@@ -295,13 +199,9 @@ public class JobManager : MonoBehaviour
 
 
 
-    List<Critter> _lCritter; // debug only
-
     void Start()
     {
-        _lCritter = new List<Critter>();
-        for (int i = 0; i < 10; ++i)
-            _lCritter.Add(new Critter(i));
+        _critters = new Critters(this);
 
         _lJob = new List<JobSite>();
         JobSite jobCollectFood = new JobSite(JOBK.CollectFood);
@@ -350,29 +250,7 @@ public class JobManager : MonoBehaviour
 
     void Update()
     {
-        foreach (Critter critter in _lCritter)
-        {
-            critter._tSleep += Time.deltaTime;
-            if (critter._tSleep >= critter._tSleepDur)
-            {
-                if (critter._lTaskToDo.Count > 0)
-                {
-                    Task task = critter._lTaskToDo[0];
-                    critter._lTaskToDo.RemoveAt(0);
-                    task.CompleteTask();
-
-                    Debug.Log(critter._iCritter + ": Completing " + task._taskk.ToString());
-                }
-
-                if (critter._lTaskToDo.Count == 0)
-                {
-                    FTryGetWork(ref critter._lTaskToDo);
-                }
-
-                critter._tSleep = 0;
-            }
-        }
-
+        _critters.tick(Time.deltaTime);
         UpdateUiText();
 
         JobSite jobDel = null;
