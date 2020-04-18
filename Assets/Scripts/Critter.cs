@@ -5,22 +5,21 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
-public class Critter
+class Critter
 {
     public int _id;
     public float _sleepTimer;
     public float _sleepDuration;
-
     public List<Task> _tasks;
+    public GameObject _sprite;
 
-    public Critter(int id)
+    public Critter(int id, GameObject sprite)
     {
         _id = id;
-
         _sleepTimer = 0.0f;
         _sleepDuration = UnityEngine.Random.value * 3f + 1f;
-
         _tasks = new List<Task>();
+        _sprite = sprite;
     }
 
     public void tick(float deltaTime)
@@ -50,8 +49,16 @@ public class Critters
         m_critters = new List<Critter>();
         for (int i = 0; i < 10; ++i)
         {
-            m_critters.Add(new Critter(i));
+            AddCritter(new Vector3(i * 1.5f, 0, 0), Quaternion.identity);
         }
+    }
+
+    // returns an integer handle that maps to the critter you farted out
+    public int AddCritter(Vector3 pos, Quaternion rot)
+    {
+        GameObject Sprite = m_critterSettings.InstantiateCritterBehaviour(pos, rot);
+        m_critters.Add(new Critter(++m_nextCritterId, Sprite));
+        return m_nextCritterId;
     }
 
     public void tick(float deltaTime)
@@ -67,12 +74,8 @@ public class Critters
         }
     }
 
-    public List<Critter> Get
-    {
-        get => m_critters;
-    }
-
     private List<Critter> m_critters;
+    private int m_nextCritterId = 0;
     private JobManager m_jobManager;
     private CritterSettings m_critterSettings;
 }
