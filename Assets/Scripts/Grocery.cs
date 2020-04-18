@@ -199,7 +199,7 @@ public class Grocery : MonoBehaviour
             DESIGNATIONK desk = lDesk[iDesk];
             float u = (float)iDesk / (float)lDesk.Count;
 
-            Vector3 vecOffset = new Vector3(Mathf.Cos(u * Mathf.PI * 2), Mathf.Sin(u * Mathf.PI * 2), 0.0f) * 150;
+            Vector3 vecOffset = new Vector3(Mathf.Sin(u * Mathf.PI * 2), Mathf.Cos(u * Mathf.PI * 2), 0.0f) * 150;
             GameObject objButton = Instantiate(_prefabDesignationButton, rtrans.position + vecOffset, new Quaternion(), GetComponentInParent<Transform>());
             DesignationButton desbtn = objButton.GetComponent<DesignationButton>();
             desbtn._desk = desk;
