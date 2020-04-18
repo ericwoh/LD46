@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -25,6 +26,7 @@ public enum DESIGNATIONK // tag = desk
 
 public class Grocery : MonoBehaviour
 {
+    public GameObject _prefabDesignationButton;
     public GROCERYK _grock;
     
     // Player will set this through UI, which will then control what JOBKs get set
@@ -32,12 +34,16 @@ public class Grocery : MonoBehaviour
     JobManager _jobm;
     JobSite _job;
 
+    List<GameObject> _lObjButton;
+
     // Start is called before the first frame update
     void Start()
     {
         //_desk = DESIGNATIONK.None;
-        _jobm = GameObject.Find("Game Manager").GetComponent<Game>()._jobManager;
         _job = null;
+        _jobm = null;
+
+        _lObjButton = new List<GameObject>();
     }
 
     static int CFoodInitialFromGrock(GROCERYK grock)
@@ -82,6 +88,19 @@ public class Grocery : MonoBehaviour
         return 0;
     }
 
+    static List<DESIGNATIONK> LDeskFromGrock(GROCERYK grock)
+    {
+        switch (grock)
+        {
+            case GROCERYK.Milk:
+                return new List<DESIGNATIONK> { DESIGNATIONK.None, DESIGNATIONK.BuildHomes, DESIGNATIONK.CollectFood, DESIGNATIONK.StoreFood};
+            case GROCERYK.Beer:
+                return new List<DESIGNATIONK> { DESIGNATIONK.None, DESIGNATIONK.BuildHomes, DESIGNATIONK.StoreFood };
+        }
+
+        return new List<DESIGNATIONK> { DESIGNATIONK.None };
+    }
+
     void DebugDrawText()
     {
         Text text = GetComponent<Text>();
@@ -116,6 +135,10 @@ public class Grocery : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (_jobm == null)
+            _jobm = GameObject.Find("Game Manager").GetComponent<Game>()._jobManager;
+
+
         DebugDrawText();
 
         if (_job == null && _desk != DESIGNATIONK.None)
@@ -140,7 +163,7 @@ public class Grocery : MonoBehaviour
         if (_desk == DESIGNATIONK.None)
             return;
 
-        switch(_desk)
+        switch (_desk)
         {
             case DESIGNATIONK.StoreFood:
                 break;
@@ -163,6 +186,45 @@ public class Grocery : MonoBehaviour
                     }
                 }
                 break;
+        }
+    }
+
+    public void OnButtonClick()
+    {
+        RectTransform rtrans = GetComponent<RectTransform>(); 
+
+        List<DESIGNATIONK> lDesk = LDeskFromGrock(_grock);
+        for (int iDesk = 0; iDesk < lDesk.Count; ++iDesk)
+        {
+            DESIGNATIONK desk = lDesk[iDesk];
+            float u = (float)iDesk / (float)lDesk.Count;
+
+            Vector3 vecOffset = new Vector3(Mathf.Cos(u * Mathf.PI * 2), Mathf.Sin(u * Mathf.PI * 2), 0.0f) * 150;
+            GameObject objButton = Instantiate(_prefabDesignationButton, rtrans.position + vecOffset, new Quaternion(), GetComponentInParent<Transform>());
+            DesignationButton desbtn = objButton.GetComponent<DesignationButton>();
+            desbtn._desk = desk;
+            desbtn._grocTarget = this;
+
+            _lObjButton.Add(objButton);
+        }
+
+        GetComponent<Button>().interactable = false;
+    }
+
+    public void SetDesignation(DESIGNATIONK desk)
+    {
+        _desk = desk;
+        foreach (GameObject obj in _lObjButton)
+        {
+            Destroy(obj);
+        }
+     
+        GetComponent<Button>().interactable = true;
+
+        if (_job != null)
+        {
+            _jobm.RemoveJob(_job);
+            _job = null;
         }
     }
 }
