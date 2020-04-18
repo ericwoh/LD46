@@ -32,8 +32,6 @@ public enum NEEDK // tag = needk
     // lubrication?
 }
 
-
-
 // Jobs are how the critters interact with groceries
 public class JobSite // tag = job
 {
@@ -52,7 +50,7 @@ public class JobSite // tag = job
         _jobk = jobk;
     }
 
-    public bool FCanFulfillNeed(NEEDK needk) 
+    public bool FCanFulfillNeed(NEEDK needk)
     {
         switch (_jobk)
         {
@@ -97,12 +95,9 @@ public class JobSite // tag = job
     }
 }
 
-public class JobManager : MonoBehaviour
+public class JobManager
 {
     List<JobSite> _lJob;
-    Critters _critters;
-
-    public GameObject _objText;
 
     public void AddJob(JobSite job)
     {
@@ -150,7 +145,7 @@ public class JobManager : MonoBehaviour
             {
                 case JOBK.CollectFood:
                     break;
-                
+
                 case JOBK.WarmHome:
                     break;
 
@@ -222,25 +217,13 @@ public class JobManager : MonoBehaviour
     }
 
 
-
-    void Start()
+    public JobManager()
     {
-        _critters = new Critters(this);
-
         _lJob = new List<JobSite>();
     }
 
-    void UpdateUiText()
+    public void tick(float deltaTime)
     {
-        Text text = _objText.GetComponent<Text>();
-        text.text = "";
-    }
-
-    void Update()
-    {
-        _critters.tick(Time.deltaTime);
-        UpdateUiText();
-
         JobSite jobDel = null;
         foreach (JobSite job in _lJob)
         {
@@ -257,7 +240,7 @@ public class JobManager : MonoBehaviour
         if (jobDel != null)
         {
             _lJob.Remove(jobDel);
-            
+
             JobSite jobHousing = new JobSite(JOBK.WarmHome);
             jobHousing._mpReskCRes[RESOURCEK.WarmBed] = 5;
             _lJob.Add(jobHousing);
