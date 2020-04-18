@@ -5,12 +5,6 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
-// The 'physical/heavy' representation of a critter in our game'
-public class CritterSettings : MonoBehaviour
-{
-    public GameObject _critterPrefab;
-}
-
 public class Critter
 {
     public int _id;

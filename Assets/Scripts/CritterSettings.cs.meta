@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: cc22fec56c0ccc4419c3939b00e00b22
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - _critterPrefab: {fileID: 7843177326428173500, guid: 819e58e48e4d1c24284788c5bf8fcbdd,
+      type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
