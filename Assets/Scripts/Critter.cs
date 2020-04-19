@@ -36,16 +36,32 @@ class Critter
         {
             Vector3 pos = _sprite.transform.position;
             Task task = _tasks[0];
-            float taskX = task._job._location.position.x;
-            float critterX = pos.x;
-            float dirX = taskX - critterX;
-            critterX += (dirX / Mathf.Abs(dirX)) * deltaTime * 2.0f;
-            _sprite.transform.position = new Vector3(critterX, pos.y, pos.z);
-            if (Mathf.Approximately(critterX, taskX) == false)
+            if (task._job._location == null)
             {
-                return; // guard against the task being completed until critter gets to site
+                foreach (Task taskOther in _tasks)
+                    taskOther.CancelTask();
+                _tasks.Clear();
+            }
+            else
+            {
+                float taskX = task._job._location.position.x;
+                float critterX = pos.x;
+                float dirX = taskX - critterX;
+                float dX = Mathf.Sign(dirX) * deltaTime * 2.0f;
+                if (dX > Mathf.Abs(critterX - taskX))
+                {
+                    dX = Mathf.Sign(dX) * Mathf.Abs(critterX - taskX);
+                }
+
+                critterX += dX;
+                _sprite.transform.position = new Vector3(critterX, pos.y, pos.z);
+                if (Mathf.Approximately(critterX, taskX) == false)
+                {
+                    return; // guard against the task being completed until critter gets to site
+                }
             }
         }
+
         _sleepTimer += deltaTime;
         if (_sleepTimer >= _sleepDuration)
         {
