@@ -83,6 +83,16 @@ PrefabInstance:
       propertyPath: m_WasSpriteAssigned
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4221915618503756248, guid: f20f5258daef48f42aa97639d42cd1a5,
+        type: 3}
+      propertyPath: m_SortingLayerID
+      value: 1642511327
+      objectReference: {fileID: 0}
+    - target: {fileID: 4221915618503756248, guid: f20f5258daef48f42aa97639d42cd1a5,
+        type: 3}
+      propertyPath: m_SortingLayer
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 7534244452935193115, guid: f20f5258daef48f42aa97639d42cd1a5,
         type: 3}
       propertyPath: _width
