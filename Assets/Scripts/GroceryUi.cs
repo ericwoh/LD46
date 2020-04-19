@@ -24,6 +24,9 @@ public class GroceryUi : MonoBehaviour
 
     private void OnDestroy()
     {
+        if (_lObjButton.Count > 0)
+            _grocm._fButtonsDisabled = false;
+
         foreach (GameObject obj in _lObjButton)
         {
             Destroy(obj);
@@ -53,8 +56,7 @@ public class GroceryUi : MonoBehaviour
         if (_fHovered && !_grocm._fButtonsDisabled)
             _tLastHover = Time.time;
 
-        float u = Mathf.Lerp(0.6f, 1.0f, Mathf.Clamp01((Time.time - _tLastHover) * 10.0f));
-        _groc.GetComponent<SpriteRenderer>().color = new Color(u, u, u);
+        _groc.SetFade(Mathf.Clamp01((Time.time - _tLastHover) * 10.0f));
     }
 
     void DebugDrawText()
@@ -93,6 +95,14 @@ public class GroceryUi : MonoBehaviour
         RectTransform rtrans = GetComponent<RectTransform>();
 
         List<DESIGNATIONK> lDesk = Grocery.LDeskFromGrock(_groc._grock);
+
+        // filter invalid designationks...
+        if (lDesk.Contains(DESIGNATIONK.CollectFood))
+        {
+            if (_groc._mpReskCRes[RESOURCEK.Food] <= 0)
+                lDesk.Remove(DESIGNATIONK.CollectFood);
+        }
+
         for (int iDesk = 0; iDesk < lDesk.Count; ++iDesk)
         {
             DESIGNATIONK desk = lDesk[iDesk];
