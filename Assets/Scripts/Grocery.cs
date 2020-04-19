@@ -199,7 +199,7 @@ public class Grocery : MonoBehaviour
 
                         // we can have beds now!
                         _job = new JobSite(JOBK.WarmHome, transform);
-                        _job._mpReskCRes[RESOURCEK.WarmBed] = CWarmBedsFromGrock(_grock) * cSlot;
+                        _job._mpReskCRes[RESOURCEK.WarmBed] = CWarmBedsPerSlotFromGrock(_grock) * cSlot;
                         _jobm.AddJob(_job);
                     }
                 }
