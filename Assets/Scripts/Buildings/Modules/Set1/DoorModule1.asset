@@ -23,4 +23,4 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   mLowerNeightborModules: []
-  mSprite: {fileID: 0}
+  mSprite: {fileID: 21300000, guid: 055320fe8bf837c4d8b9b9849f69e3a9, type: 3}
