@@ -63,6 +63,8 @@ public class Shelf
         for (int i = 0; i < cGrocery; ++i)
         {
             int iObjRemove = Random.Range(0, _lObjGrocery.Count);
+            GameObject obj = _lObjGrocery[iObjRemove];
+            Object.Destroy(obj);
             _lObjGrocery.RemoveAt(iObjRemove);
         }
     }
@@ -71,6 +73,8 @@ public class Shelf
 public class GroceryManager
 {
     private List<GameObject> _lPrefabGrocery;
+    public List<GameObject> _lPrefabBuildingType;
+
     List<Shelf> _lShelf;
     float _tLastGroceryAdd = -1000.0f;
     float _tLastGroceryRemove = -1000.0f;
@@ -83,6 +87,8 @@ public class GroceryManager
     public GroceryManager(GroceryManagerSettings grocmsetting)
     {
         _lPrefabGrocery = grocmsetting._lPrefabGrocery;
+        _lPrefabBuildingType = grocmsetting._lPrefabBuildingType;
+
         _lShelf = new List<Shelf>();
         for (int iShelf = 0; iShelf < grocmsetting._cShelf; ++iShelf)
         {

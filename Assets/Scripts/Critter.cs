@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-
 class Critter
 {
     public int _id;
@@ -12,6 +11,7 @@ class Critter
     public float _sleepDuration;
     public List<Task> _tasks;
     public GameObject _sprite;
+    public GameObject _emote;
 
     public Critter(int id, GameObject sprite)
     {
@@ -20,10 +20,20 @@ class Critter
         _sleepDuration = UnityEngine.Random.value * 3f + 1f;
         _tasks = new List<Task>();
         _sprite = sprite;
+        _emote = sprite.transform.Find("emote").gameObject;
     }
 
     public void tick(float deltaTime)
     {
+        if (_tasks.Count > 0)
+        {
+            Vector3 pos = _sprite.transform.position;
+            Task task = _tasks[0];
+            float taskX = task._job._location.position.x;
+            float critterX = pos.x;
+            float newCritterX = Mathf.Lerp(critterX, taskX, deltaTime * 2.0f);
+            _sprite.transform.position = new Vector3(newCritterX, pos.y, pos.z);
+        }
         _sleepTimer += deltaTime;
         if (_sleepTimer >= _sleepDuration)
         {
@@ -38,6 +48,11 @@ class Critter
             _sleepTimer = 0;
         }
     }
+
+    public void setEmoteSprite(Sprite emote)
+    {
+        _emote.GetComponent<SpriteRenderer>().sprite = emote;
+    }
 }
 
 public class Critters
@@ -47,9 +62,9 @@ public class Critters
         m_critterSettings = critterSettings;
         m_jobManager = jobManager;
         m_critters = new List<Critter>();
-        for (int i = 0; i < 10; ++i)
+        for (int i = 0; i < 1; ++i)
         {
-            AddCritter(new Vector3(i * 1.5f, 0, 0), Quaternion.identity);
+            AddCritter(new Vector3(i * 1.5f, 3, 0), Quaternion.identity);
         }
     }
 
@@ -58,6 +73,7 @@ public class Critters
     {
         GameObject Sprite = m_critterSettings.InstantiateCritterBehaviour(pos, rot);
         m_critters.Add(new Critter(++m_nextCritterId, Sprite));
+        m_critters[m_critters.Count - 1].setEmoteSprite(m_critterSettings.spriteEmoteHappy);
         return m_nextCritterId;
     }
 

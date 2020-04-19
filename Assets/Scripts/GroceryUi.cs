@@ -12,12 +12,22 @@ public class GroceryUi : MonoBehaviour
     List<GameObject> _lObjButton;
     GroceryManager _grocm;
 
+    bool _fHovered = false;
+    float _tLastHover = -1000.0f;
 
     // Start is called before the first frame update
     void Start()
     {
         _lObjButton = new List<GameObject>();
         _grocm = GameObject.Find("Game Manager").GetComponent<Game>()._grocm;
+    }
+
+    private void OnDestroy()
+    {
+        foreach (GameObject obj in _lObjButton)
+        {
+            Destroy(obj);
+        }
     }
 
     public void SetGrocery(Grocery groc)
@@ -39,6 +49,12 @@ public class GroceryUi : MonoBehaviour
         DebugDrawText();
 
         GetComponent<Button>().interactable = !_grocm._fButtonsDisabled;
+
+        if (_fHovered && !_grocm._fButtonsDisabled)
+            _tLastHover = Time.time;
+
+        float u = Mathf.Lerp(0.6f, 1.0f, Mathf.Clamp01((Time.time - _tLastHover) * 10.0f));
+        _groc.GetComponent<SpriteRenderer>().color = new Color(u, u, u);
     }
 
     void DebugDrawText()
@@ -47,9 +63,9 @@ public class GroceryUi : MonoBehaviour
         if (text == null)
             return;
 
-        text.text = _groc._grock.ToString() + "\n\n";
-        text.text += "    Designation: " + _groc._desk.ToString() + "\n";
-        text.text += "    Current Job: ";
+        text.text = _groc._grock.ToString() + "\n";
+        text.text += "Des: " + _groc._desk.ToString() + "\n";
+        text.text += "Job: ";
         if (_groc._job != null)
         {
             text.text += _groc._job._jobk.ToString() + "\n";
@@ -57,14 +73,14 @@ public class GroceryUi : MonoBehaviour
             switch (_groc._job._jobk)
             {
                 case JOBK.Build:
-                    text.text += string.Format("    Work: {0} / {1}", _groc._job._mpReskCRes[RESOURCEK.Work], Grocery.CWorkRequiredFromGrock(_groc._grock));
+                    text.text += string.Format("Work: {0}", _groc._job._mpReskCRes[RESOURCEK.Work]);
                     break;
                 case JOBK.WarmHome:
-                    text.text += string.Format("    Available Beds: {0}", _groc._job._mpReskCRes[RESOURCEK.WarmBed]);
+                    text.text += string.Format("Available Beds: {0}", _groc._job._mpReskCRes[RESOURCEK.WarmBed]);
                     break;
                 case JOBK.CollectFood:
                 case JOBK.StoreFood:
-                    text.text += string.Format("    Food: {0}", _groc._job._mpReskCRes[RESOURCEK.Food]);
+                    text.text += string.Format("Food: {0}", _groc._job._mpReskCRes[RESOURCEK.Food]);
                     break;
             }
         }
@@ -74,9 +90,6 @@ public class GroceryUi : MonoBehaviour
 
     public void OnButtonClick()
     {
-        //if (_grocm._fButtonsDisabled)
-        //    return;
-
         RectTransform rtrans = GetComponent<RectTransform>();
 
         List<DESIGNATIONK> lDesk = Grocery.LDeskFromGrock(_groc._grock);
@@ -99,6 +112,16 @@ public class GroceryUi : MonoBehaviour
         }
 
         _grocm._fButtonsDisabled = true;
+    }
+
+    public void OnStartHover()
+    {
+        _fHovered = true;
+    }
+
+    public void OnEndHover()
+    {
+        _fHovered = false;
     }
 
     public void Clear()

@@ -156,6 +156,23 @@ public class Building : MonoBehaviour
         mEmptySlots = mBuildingWidth * mBuildingHeight; // reinit to empty
     }
 
+    public int NumSlotsMax()
+    {
+        return mBuildingWidth * mBuildingHeight;
+    }
+
+    public int NumSlots()
+    {
+        return NumSlotsMax() - mEmptySlots;
+    }
+
+    public void ClearAndRefresh()
+    {
+        ClearBuildingModules();
+        mSlots.Clear();
+        OnEnable();
+    }
+
     #endregion
 
     #region Internal Helper Methods

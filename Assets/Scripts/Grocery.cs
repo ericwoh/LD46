@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.UI;
@@ -34,10 +35,15 @@ public class Grocery : MonoBehaviour
     JobManager _jobm;
     public JobSite _job;
 
+    Dictionary<RESOURCEK, int> _mpReskCRes;
+
     public int _width;
     public int _height;
     public int _iSlot;
     public int _iShelf;
+
+    GameObject _objUi = null;
+    GameObject _objBuilding = null;
 
     // Start is called before the first frame update
     void Start()
@@ -46,47 +52,65 @@ public class Grocery : MonoBehaviour
         _jobm = null;
 
         GameObject canvas = GameObject.Find("Canvas");
-        GameObject objUi = Instantiate(_grocuiPrefab, canvas.GetComponent<Transform>());
-        objUi.GetComponent<GroceryUi>().SetGrocery(this);
+        _objUi = Instantiate(_grocuiPrefab, canvas.GetComponent<Transform>());
+        _objUi.GetComponent<GroceryUi>().SetGrocery(this);
+
+        _mpReskCRes = new Dictionary<RESOURCEK, int>();
+        _mpReskCRes[RESOURCEK.Food] = 0;
+        _mpReskCRes[RESOURCEK.WarmBed] = 0;
+        _mpReskCRes[RESOURCEK.Work] = 0;
+
+        switch (_grock)
+        {
+            case GROCERYK.Milk: break;
+            case GROCERYK.Apples:
+                _mpReskCRes[RESOURCEK.Food] = 40;
+                break;
+            case GROCERYK.Broccoli:
+                _mpReskCRes[RESOURCEK.Food] = 100;
+                break;
+            case GROCERYK.Jar: break;
+            case GROCERYK.Eggs: break;
+        }
     }
 
-    static int CFoodInitialFromGrock(GROCERYK grock)
+    private void OnDestroy()
+    {
+        Destroy(_objUi);
+        if (_objBuilding != null)
+            Destroy(_objBuilding);
+
+        if (_job != null)
+        {
+            _jobm.RemoveJob(_job);
+        }
+    }
+
+    public static int CWorkRequiredPerSlotFromGrock(GROCERYK grock)
     {
         switch (grock)
         {
             case GROCERYK.Milk:
-                return 10;
-
             case GROCERYK.Apples:
-                return 0;
+            case GROCERYK.Broccoli:
+            case GROCERYK.Jar:
+            case GROCERYK.Eggs:
+                return 3;
         }
 
         return 0;
     }
 
-    public static int CWorkRequiredFromGrock(GROCERYK grock)
+    public static int CWarmBedsPerSlotFromGrock(GROCERYK grock)
     {
         switch (grock)
         {
             case GROCERYK.Milk:
-                return 20;
-
             case GROCERYK.Apples:
-                return 20;
-        }
-
-        return 0;
-    }
-
-    public static int CWarmBedsFromGrock(GROCERYK grock)
-    {
-        switch (grock)
-        {
-            case GROCERYK.Milk:
-                return 5;
-
-            case GROCERYK.Apples:
-                return 5;
+            case GROCERYK.Broccoli:
+            case GROCERYK.Jar:
+            case GROCERYK.Eggs:
+                return 1;
         }
 
         return 0;
@@ -97,9 +121,12 @@ public class Grocery : MonoBehaviour
         switch (grock)
         {
             case GROCERYK.Milk:
-                return new List<DESIGNATIONK> { DESIGNATIONK.None, DESIGNATIONK.BuildHomes, DESIGNATIONK.CollectFood, DESIGNATIONK.StoreFood};
+            case GROCERYK.Jar:
+            case GROCERYK.Eggs:
+                return new List<DESIGNATIONK> { DESIGNATIONK.None, DESIGNATIONK.BuildHomes, DESIGNATIONK.StoreFood};
             case GROCERYK.Apples:
-                return new List<DESIGNATIONK> { DESIGNATIONK.None, DESIGNATIONK.BuildHomes, DESIGNATIONK.StoreFood };
+            case GROCERYK.Broccoli:
+                return new List<DESIGNATIONK> { DESIGNATIONK.None, DESIGNATIONK.CollectFood };
         }
 
         return new List<DESIGNATIONK> { DESIGNATIONK.None };
@@ -117,14 +144,14 @@ public class Grocery : MonoBehaviour
             switch (_desk)
             {
                 case DESIGNATIONK.StoreFood:
-                    _job = new JobSite(JOBK.StoreFood);
+                    _job = new JobSite(JOBK.StoreFood, transform);
                     break;
                 case DESIGNATIONK.CollectFood:
-                    _job = new JobSite(JOBK.CollectFood);
-                    _job._mpReskCRes[RESOURCEK.Food] = CFoodInitialFromGrock(_grock);
+                    _job = new JobSite(JOBK.CollectFood, transform);
+                    _job._mpReskCRes[RESOURCEK.Food] = _mpReskCRes[RESOURCEK.Food];
                     break;
                 case DESIGNATIONK.BuildHomes:
-                    _job = new JobSite(JOBK.Build);
+                    _job = new JobSite(JOBK.Build, transform);
                     break;
             }
 
@@ -145,14 +172,34 @@ public class Grocery : MonoBehaviour
             case DESIGNATIONK.BuildHomes:
                 if (_job._jobk == JOBK.Build)
                 {
-                    if (_job._mpReskCRes[RESOURCEK.Work] > CWorkRequiredFromGrock(_grock))
+                    GroceryManager grocm = GameObject.Find("Game Manager").GetComponent<Game>()._grocm;
+
+                    if (_objBuilding == null)
+                    {
+                        GameObject prefabBuildingType = grocm._lPrefabBuildingType[UnityEngine.Random.Range(0, grocm._lPrefabBuildingType.Count)];
+                        _objBuilding = Instantiate(prefabBuildingType, transform.position, transform.rotation, transform);
+                        _objBuilding.GetComponent<Building>().mBuildingWidth = _width;
+                        _objBuilding.GetComponent<Building>().mBuildingHeight = _height;
+                        _objBuilding.GetComponent<Building>().ClearAndRefresh();
+                    }
+
+                    int cSlot = _objBuilding.GetComponent<Building>().NumSlots();
+                    int cSlotMax = _objBuilding.GetComponent<Building>().NumSlotsMax();
+                    int cWorkRequiredPerSlot = CWorkRequiredPerSlotFromGrock(_grock);
+
+                    if (_job._mpReskCRes[RESOURCEK.Work] > (cSlot + 1) * cWorkRequiredPerSlot)
+                    {
+                        _objBuilding.GetComponent<Building>().BuildNewModule();
+                    }
+
+                    if (_job._mpReskCRes[RESOURCEK.Work] > cSlotMax * cWorkRequiredPerSlot)
                     {
                         // done building!
                         _jobm.RemoveJob(_job);
 
                         // we can have beds now!
-                        _job = new JobSite(JOBK.WarmHome);
-                        _job._mpReskCRes[RESOURCEK.WarmBed] = CWarmBedsFromGrock(_grock);
+                        _job = new JobSite(JOBK.WarmHome, transform);
+                        _job._mpReskCRes[RESOURCEK.WarmBed] = CWarmBedsFromGrock(_grock) * cSlot;
                         _jobm.AddJob(_job);
                     }
                 }
@@ -185,6 +232,20 @@ public class Grocery : MonoBehaviour
 
         if (_job != null)
         {
+            switch (_job._jobk)
+            {
+                case JOBK.Build:
+                    break;
+                case JOBK.StoreFood:
+                    _mpReskCRes[RESOURCEK.Food] = _job._mpReskCRes[RESOURCEK.Food];
+                    break;
+                case JOBK.CollectFood:
+                    _mpReskCRes[RESOURCEK.Food] = _job._mpReskCRes[RESOURCEK.Food];
+                    break;
+                case JOBK.WarmHome:
+                    break;
+            }
+
             _jobm.RemoveJob(_job);
             _job = null;
         }
