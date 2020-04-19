@@ -19,9 +19,12 @@ public enum GROCERYK // tag = grock
 public enum DESIGNATIONK // tag = desk
 {
     None,
-    StoreFood,
+
     CollectFood,
+    StoreFood,
     BuildHomes,
+
+    Max,
 }
 
 public class Grocery : MonoBehaviour
@@ -35,7 +38,7 @@ public class Grocery : MonoBehaviour
     JobManager _jobm;
     public JobSite _job;
 
-    Dictionary<RESOURCEK, int> _mpReskCRes;
+    public Dictionary<RESOURCEK, int> _mpReskCRes;
 
     public int _width;
     public int _height;
@@ -44,6 +47,8 @@ public class Grocery : MonoBehaviour
 
     GameObject _objUi = null;
     GameObject _objBuilding = null;
+
+    Color _colorBase = Color.white;
 
     // Start is called before the first frame update
     void Start()
@@ -71,6 +76,23 @@ public class Grocery : MonoBehaviour
             case GROCERYK.Eggs:
                 break;
         }
+    }
+
+    public void SetFade(float uFade)
+    {
+        if (_job != null && _job._jobk == JOBK.CollectFood)
+        {
+            int cFoodMax = _width * _height * CFoodPerSlotFromGrock(_grock);
+            int cFood = _job._mpReskCRes[RESOURCEK.Food];
+        
+            if (cFood > 0)
+                _colorBase = Color.Lerp(Color.white, new Color(0.7f, 0.5f, 0.2f), 1.0f - (float)cFood / (float)cFoodMax);
+            else
+                _colorBase = new Color(0.5f, 0.3f, 0.1f);
+        }
+
+        float u = Mathf.Lerp(0.6f, 1.0f, uFade);
+        GetComponent<SpriteRenderer>().color = new Color(_colorBase.r * u, _colorBase.g * u, _colorBase.b * u);
     }
 
     private void OnDestroy()
@@ -137,10 +159,10 @@ public class Grocery : MonoBehaviour
             case GROCERYK.Milk:
             case GROCERYK.Jar:
             case GROCERYK.Eggs:
-                return new List<DESIGNATIONK> { DESIGNATIONK.None, DESIGNATIONK.BuildHomes, DESIGNATIONK.StoreFood};
+                return new List<DESIGNATIONK> { DESIGNATIONK.None, DESIGNATIONK.BuildHomes, DESIGNATIONK.StoreFood };
             case GROCERYK.Apples:
             case GROCERYK.Broccoli:
-                return new List<DESIGNATIONK> { DESIGNATIONK.None, DESIGNATIONK.CollectFood };
+                return new List<DESIGNATIONK> { DESIGNATIONK.None, DESIGNATIONK.CollectFood, DESIGNATIONK.BuildHomes, DESIGNATIONK.StoreFood };
         }
 
         return new List<DESIGNATIONK> { DESIGNATIONK.None };
@@ -164,6 +186,7 @@ public class Grocery : MonoBehaviour
                 case DESIGNATIONK.CollectFood:
                     _job = new JobSite(JOBK.CollectFood, transform);
                     _job._mpReskCRes[RESOURCEK.Food] = _mpReskCRes[RESOURCEK.Food];
+                    _job._mpReskCResLimit[RESOURCEK.Food] = _width * _height * CFoodPerSlotFromGrock(_grock);
                     break;
                 case DESIGNATIONK.BuildHomes:
                     _job = new JobSite(JOBK.Build, transform);

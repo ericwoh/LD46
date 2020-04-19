@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 // a discrete unit of work that can be complete by a critter
@@ -50,23 +51,30 @@ public class Task // tag = task
         }
     }
 
-    public void CancelTask()
+    public static void CancelTasks(List<Task> lTask)
     {
         // unclaim resources
-        switch (_taskk)
+        foreach (Task task in lTask)
         {
-            case TASKK.EatFood:
-            case TASKK.CollectFood:
-                _job.GiveResource(RESOURCEK.Food);
-                break;
+            switch (task._taskk)
+            {
+                case TASKK.EatFood:
+                case TASKK.CollectFood:
+                    task._job.GiveResource(RESOURCEK.Food);
+                    break;
 
-            case TASKK.GetWarm:
-                _job.GiveResource(RESOURCEK.WarmBed);
-                break;
+                case TASKK.GetWarm:
+                    task._job.GiveResource(RESOURCEK.WarmBed);
+                    break;
 
-            case TASKK.StoreFood:
-            case TASKK.Work:
-                break;
+                case TASKK.StoreFood:
+                    task._job._mpReskCResPending[RESOURCEK.Food]--;
+                    break;
+
+                case TASKK.Work:
+                    task._job._mpReskCResPending[RESOURCEK.Work]--;
+                    break;
+            }
         }
     }
 
@@ -82,6 +90,7 @@ public class Task // tag = task
 
             case TASKK.StoreFood:
                 _job.GiveResource(RESOURCEK.Food);
+                _job._mpReskCResPending[RESOURCEK.Food]--;
                 break;
 
             case TASKK.GetWarm:
@@ -90,6 +99,7 @@ public class Task // tag = task
 
             case TASKK.Work:
                 _job.GiveResource(RESOURCEK.Work);
+                _job._mpReskCResPending[RESOURCEK.Work]--;
                 break;
         }
     }

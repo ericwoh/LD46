@@ -30,18 +30,25 @@ public class Shelf
             }
             else
             {
-                iSlot = groc._iSlot + groc._width;
+                iSlot = Mathf.Max(iSlot, groc._iSlot + groc._width);
             }
         }
 
         if (iSlot < _cSlot)
         {
-            if (width == -1)
+            int rand = Random.Range(0, 2);
+            if (rand != 0)
+            {
+                iSlot++;
+                width--;
+            }
+
+            if (width < 0)
             {
                 width = _cSlot - iSlot;
             }
 
-            return true;
+            return iSlot < _cSlot;
         }
 
         return false;
@@ -60,12 +67,27 @@ public class Shelf
 
     public void RemoveRandomGroceries(int cGrocery)
     {
+        int cSkip = 0;
+
         for (int i = 0; i < cGrocery; ++i)
         {
             int iObjRemove = Random.Range(0, _lObjGrocery.Count);
-            GameObject obj = _lObjGrocery[iObjRemove];
-            Object.Destroy(obj);
-            _lObjGrocery.RemoveAt(iObjRemove);
+            if (iObjRemove < _lObjGrocery.Count)
+            {
+                GameObject obj = _lObjGrocery[iObjRemove];
+
+                if (cSkip < 3 && obj.GetComponent<Grocery>()._desk != DESIGNATIONK.None)
+                {
+                    // Try and avoid nuking things the player is using, but only a little bit
+
+                    i--;
+                    cSkip++;
+                    continue;
+                }
+
+                Object.Destroy(obj);
+                _lObjGrocery.RemoveAt(iObjRemove);
+            }
         }
     }
 }
@@ -157,8 +179,6 @@ public class GroceryManager
                 if (shelf.FTryGetNextAvailableSlot(ref iSlot, ref width))
                 {
                     GameObject obj = ObjCreateGroceryBySize(width);
-                
-                    // BB (ericw) Should we leave some empty space occasionally?
 
                     if (obj != null)
                     {
@@ -167,7 +187,7 @@ public class GroceryManager
                     }
                     else
                     {
-                        break;
+                        iSlot++;
                     }
                 }
                 else
