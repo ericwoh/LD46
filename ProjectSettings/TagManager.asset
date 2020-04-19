@@ -56,6 +56,6 @@ TagManager:
   - name: BuildingModules
     uniqueID: 3308134581
     locked: 0
-  - name: Characters
+  - name: Critters
     uniqueID: 3859757241
     locked: 0

@@ -21,7 +21,7 @@ class Critter
         _sleepDuration = UnityEngine.Random.value * 3f + 1f;
         _tasks = new List<Task>();
         _sprite = sprite;
-        _emote = sprite.Transform.Find("emote");
+        //_emote = sprite.Transform.Find("emote");
     }
 
     public void tick(float deltaTime)
@@ -73,7 +73,7 @@ public class Critters
             {
                 m_jobManager.FTryGetWork(ref critter._tasks);
 
-                critter._emote.GetComponent<SpriteRenderer>().Sprite = m_critterSettings.spriteEmoteHappy;
+                //critter._emote.GetComponent<SpriteRenderer>().Sprite = m_critterSettings.spriteEmoteHappy;
             }
         }
     }

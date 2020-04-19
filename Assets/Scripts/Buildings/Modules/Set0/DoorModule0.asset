@@ -23,4 +23,4 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 7dca94055ccb2234c8702a86fcd98f83, type: 2}
   - {fileID: 11400000, guid: 3e1f109074462fb45b51fddb9fc37395, type: 2}
   mLowerNeightborModules: []
-  mSprite: {fileID: 21300000, guid: db7a6adaaffb373409d634bb43ddeefb, type: 3}
+  mSprite: {fileID: 21300000, guid: 3bde98767fb104842823efa903699749, type: 3}

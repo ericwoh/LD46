@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: BuildingModuleSet1
   m_EditorClassIdentifier: 
   mItems:
-  - {fileID: 11400000, guid: 2c8f4521210dce04e9fb79d4936ab49d, type: 2}
-  - {fileID: 11400000, guid: 9ce434a7e55f01448bd55d388a0aa388, type: 2}
   - {fileID: 11400000, guid: 92cdd4c7d6bd14841b455f7b9b6b9482, type: 2}
   - {fileID: 11400000, guid: 4232bd448881b3647ad0b332635890a1, type: 2}
-  mDoorModule: {fileID: 0}
+  - {fileID: 11400000, guid: 9ce434a7e55f01448bd55d388a0aa388, type: 2}
+  - {fileID: 11400000, guid: 2c8f4521210dce04e9fb79d4936ab49d, type: 2}
+  - {fileID: 11400000, guid: a852f77ec13ad7245bf97cf8f29afe36, type: 2}
+  mDoorModule: {fileID: 11400000, guid: a852f77ec13ad7245bf97cf8f29afe36, type: 2}
