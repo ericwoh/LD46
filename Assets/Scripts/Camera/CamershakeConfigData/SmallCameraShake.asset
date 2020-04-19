@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1aa44b6508ee22428370dbc6d7ae13c, type: 3}
   m_Name: SmallCameraShake
   m_EditorClassIdentifier: 
-  mShakeDuration: 0
-  mShakeAmount: 0
-  mDecreaseFactor: 0
+  mShakeDuration: 0.15
+  mShakeAmount: 0.04
+  mDecreaseFactor: 1
