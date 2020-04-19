@@ -54,7 +54,7 @@ public class Building : MonoBehaviour
         // spawn ui for buildings
         GameObject canvas = GameObject.Find("Canvas");
         Vector3 posScreen = Camera.main.WorldToScreenPoint(transform.position);
-        Instantiate(mUiPrefab, posScreen, new Quaternion(), canvas.GetComponent<Transform>());
+        Instantiate(mUiPrefab, posScreen + new Vector3(0, 125, 0), new Quaternion(), canvas.GetComponent<Transform>());
 
         if (mSlots == null)
             mSlots = new List<GameObject>(mBuildingWidth * mBuildingHeight);

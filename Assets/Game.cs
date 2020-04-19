@@ -5,6 +5,8 @@ using UnityEngine;
 public class Game : MonoBehaviour
 {
     public JobManager _jobManager;
+    public GroceryManager _grocm;
+    public GroceryManagerSettings _grocmsettings;
 
     //
     public Critters _critters;
@@ -14,6 +16,7 @@ public class Game : MonoBehaviour
     void Start()
     {
         _jobManager = new JobManager();
+        _grocm = new GroceryManager(_grocmsettings);
         _critters = new Critters(_critterSettings, _jobManager);
     }
 
@@ -21,6 +24,7 @@ public class Game : MonoBehaviour
     void Update()
     {
         _critters.tick(Time.deltaTime);
+        _grocm.tick();
         _jobManager.tick(Time.deltaTime);
     }
 }

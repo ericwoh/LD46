@@ -36,6 +36,10 @@ public class Grocery : MonoBehaviour
 
     List<GameObject> _lObjButton;
 
+    public int _width;
+    public int _iSlot;
+    public int _iShelf;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -200,6 +204,7 @@ public class Grocery : MonoBehaviour
             float u = (float)iDesk / (float)lDesk.Count;
 
             Vector3 vecOffset = new Vector3(Mathf.Sin(u * Mathf.PI * 2), Mathf.Cos(u * Mathf.PI * 2), 0.0f) * 150;
+            Debug.Log(_prefabDesignationButton.GetComponent<DesignationButton>()._desk.ToString());
             GameObject objButton = Instantiate(_prefabDesignationButton, rtrans.position + vecOffset, new Quaternion(), GetComponentInParent<Transform>());
             DesignationButton desbtn = objButton.GetComponent<DesignationButton>();
             desbtn._desk = desk;
@@ -226,5 +231,24 @@ public class Grocery : MonoBehaviour
             _jobm.RemoveJob(_job);
             _job = null;
         }
+    }
+
+    public void SetISlotAndIShelf(int iSlot, int iShelf)
+    {
+        _iSlot = iSlot;
+        _iShelf = iShelf;
+
+        float y = 0.0f;
+
+        // too tired to do real math...
+
+        switch (_iShelf)
+        {
+            case 0: y = -7.0f; break;
+            case 1: y = -2.0f; break;
+            case 2: y =  3.0f; break;
+        }
+
+        GetComponent<Transform>().position = new Vector3(_iSlot - 7.5f, y, 10.0f);
     }
 }
