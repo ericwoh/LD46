@@ -94,11 +94,13 @@ public class Building : MonoBehaviour
 
         // initialize build order for this building
         // start each building with a front door module
-        int doorSlot = (int)(((mBuildingWidth * 0.5f) - 1));
-        mSlots[doorSlot].GetComponent<BuildingSlot>().SetBuildingModule(mModuleSet.mDoorModules[0]);
-        mSlots[doorSlot].GetComponent<BuildingSlot>().mIsDoor = true;
-        mLastModuleBuiltIndex = doorSlot;
-        mEmptySlots -= 1;
+
+        BuildNewModule();
+        //int doorSlot = (int)(((mBuildingWidth * 0.5f) - 1));
+        //mSlots[doorSlot].GetComponent<BuildingSlot>().SetBuildingModule(mModuleSet.mDoorModules[0]);
+        //mSlots[doorSlot].GetComponent<BuildingSlot>().mIsDoor = true;
+        //mLastModuleBuiltIndex = doorSlot;
+        //mEmptySlots -= 1;
     }
     #endregion
 
@@ -116,10 +118,27 @@ public class Building : MonoBehaviour
             return;
         }
 
-        Debug.Log("Building a new module in building " + gameObject);
+        // special case - if it's the first module, make it a door.
+        if (mEmptySlots == mBuildingWidth * mBuildingHeight)
+        {
+            int doorSlot = (int)(((mBuildingWidth * 0.5f) - 1));
+            mSlots[doorSlot].GetComponent<BuildingSlot>().SetBuildingModule(mModuleSet.mDoorModules[0]);
+            mSlots[doorSlot].GetComponent<BuildingSlot>().mIsDoor = true;
+            mLastModuleBuiltIndex = doorSlot;
+            mEmptySlots -= 1;
+
+            return;
+        }
+
+
+        //Debug.Log("Building a new module in building " + gameObject);
         // select which slot to fill next based on what module was built last
         int nextSlot = SelectNextSlotToBuild();
-        Debug.Assert(nextSlot >= 0);
+        if (nextSlot < 0)
+        {
+            Debug.LogError("Took too long choosing a random slot, didn't build anything. Try again.");
+            return;
+        }
 
         NeighborState neighbors = CheckNeighborSlots(nextSlot);
         BuildingModule firstModule = mModuleSet.GetModuleOfType(neighbors);
@@ -139,7 +158,7 @@ public class Building : MonoBehaviour
             {
                 BuildingModule module = mModuleSet.GetModuleOfType(slot.mModuleType);
                 if (slot.mIsDoor)
-                    slot.SetBuildingModule(mModuleSet.mDoorModules[i]);
+                    slot.SetBuildingModule(mModuleSet.mDoorModules[(int)slot.mModuleType]);
                 else
                     slot.SetBuildingModule(module);
             }            
@@ -208,7 +227,7 @@ public class Building : MonoBehaviour
             }                
 
             // watchdog timer
-            if (++iteration > 30)
+            if (++iteration > 50)
             {
                 Debug.LogError("Took over 30 iterations to find an empty slot, something is broken.");
                 return -1;
@@ -262,7 +281,7 @@ public class Building : MonoBehaviour
             return NeighborState.type2;
         if (!leftN && rightN && upperN)
             return NeighborState.type3;
-        if (leftN && !rightN && !upperN)
+        if (!leftN && rightN && !upperN)
             return NeighborState.type4; // left edge
         if (leftN && rightN && !upperN)
             return NeighborState.type5;
