@@ -9,7 +9,8 @@ public class BuildingSlot : MonoBehaviour
     {
         mModule = module;
         SpriteRenderer sr = GetComponent<SpriteRenderer>();
-        sr.sprite = module.mSprite;
+        if (sr != null)
+            sr.sprite = module.mSprite;
     }
 
     /// <summary>

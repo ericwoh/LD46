@@ -22,9 +22,17 @@ public class Building : MonoBehaviour
 
     private int mLastModuleBuilt = 0;
 
+    [Tooltip("UI prefab to spawn on top of this object in UI space")]
+    public GameObject mUiPrefab;
+
     #region InternalMethods
     private void OnEnable()
     {
+        // spawn ui for buildings
+        GameObject canvas = GameObject.Find("Canvas");
+        Vector3 posScreen = Camera.main.WorldToScreenPoint(transform.position);
+        Instantiate(mUiPrefab, posScreen, new Quaternion(), canvas.GetComponent<Transform>());
+
         if (mSlots == null)
             mSlots = new List<GameObject>(mBuildingWidth * mBuildingHeight);
         mModuleBuildOrder = new List<int>(mSlots.Count);
