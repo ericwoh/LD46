@@ -222,17 +222,23 @@ public class Grocery : MonoBehaviour
                         _objBuilding.GetComponent<Building>().ClearAndRefresh();
                     }
 
-                    int cSlot = _objBuilding.GetComponent<Building>().NumSlots();
-                    int cSlotMax = _objBuilding.GetComponent<Building>().NumSlotsMax();
+                    Building building = _objBuilding.GetComponent<Building>();
+                    int cSlot = building.NumSlots();
+                    int cSlotMax = building.NumSlotsMax();
                     int cWorkRequiredPerSlot = CWorkRequiredPerSlotFromGrock(_grock);
 
                     if (_job._mpReskCRes[RESOURCEK.Work] > (cSlot + 1) * cWorkRequiredPerSlot)
                     {
-                        _objBuilding.GetComponent<Building>().BuildNewModule();
+                        building.BuildNewModule();
                     }
 
                     if (_job._mpReskCRes[RESOURCEK.Work] >= cSlotMax * cWorkRequiredPerSlot)
                     {
+                        while (building.NumSlots() != building.NumSlotsMax())
+                        {
+                            building.BuildNewModule();
+                        }
+
                         // done building!
                         _jobm.RemoveJob(_job);
 
