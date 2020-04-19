@@ -1,6 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.ExceptionServices;
 using UnityEngine;
+
+public enum NeighborDir
+{
+    left = 0,
+    right = 1,
+    upper = 2,
+    lower = 3
+}
 
 /// <summary>
 /// Buildings are containers with a tile-based width and height. Buildings contain a grid of 
@@ -63,8 +72,8 @@ public class Building : MonoBehaviour
             for (int j = 0; j < mBuildingWidth; ++j)
             {
                 Vector3 slotPosition = transform.position;
-                slotPosition.x += j * mSlotWidth + (mSlotWidth * 0.5f);
-                slotPosition.y += i * mSlotHeight + (mSlotHeight * 0.5f);
+                slotPosition.x += j * mSlotWidth;// + (mSlotWidth * 0.5f);
+                slotPosition.y += i * mSlotHeight;// + (mSlotHeight * 0.5f);
 
                 // instantiate a BuildingSlot object at this position as a child of this object
                 //mSlots.Add(Instantiate(mEmptySlotPrefab, slotPosition, Quaternion.identity, transform));
@@ -86,7 +95,8 @@ public class Building : MonoBehaviour
         // initialize build order for this building
         // start each building with a front door module
         int doorSlot = (int)(((mBuildingWidth * 0.5f) - 1));
-        mSlots[doorSlot].GetComponent<BuildingSlot>().SetBuildingModule(mModuleSet.mDoorModule);
+        mSlots[doorSlot].GetComponent<BuildingSlot>().SetBuildingModule(mModuleSet.mDoorModules[0]);
+        mSlots[doorSlot].GetComponent<BuildingSlot>().mIsDoor = true;
         mLastModuleBuiltIndex = doorSlot;
         mEmptySlots -= 1;
     }
@@ -110,8 +120,30 @@ public class Building : MonoBehaviour
         // select which slot to fill next based on what module was built last
         int nextSlot = SelectNextSlotToBuild();
         Debug.Assert(nextSlot >= 0);
-        mSlots[nextSlot].GetComponent<BuildingSlot>().SetBuildingModule(mModuleSet.mDoorModule);
+
+        NeighborState neighbors = CheckNeighborSlots(nextSlot);
+        BuildingModule firstModule = mModuleSet.GetModuleOfType(neighbors);
+        mSlots[nextSlot].GetComponent<BuildingSlot>().SetBuildingModule(firstModule);
         mEmptySlots -= 1;
+
+        // update neighbor state for all slots to adjust module types if needed
+        for (int i = 0; i < mSlots.Count; i++)
+        {
+            BuildingSlot slot = mSlots[i].GetComponent<BuildingSlot>();
+            if (slot.IsSlotEmpty())
+                continue;
+
+            slot.mModuleType = CheckNeighborSlots(i);
+
+            if (slot.mModuleType != NeighborState.empty)
+            {
+                BuildingModule module = mModuleSet.GetModuleOfType(slot.mModuleType);
+                if (slot.mIsDoor)
+                    slot.SetBuildingModule(mModuleSet.mDoorModules[i]);
+                else
+                    slot.SetBuildingModule(module);
+            }            
+        }
     }
 
     public void ClearBuildingModules()
@@ -121,6 +153,7 @@ public class Building : MonoBehaviour
             BuildingSlot slot = go.GetComponent<BuildingSlot>();
             slot.ClearSlot();
         }
+        mEmptySlots = mBuildingWidth * mBuildingHeight; // reinit to empty
     }
 
     public int NumSlotsMax()
@@ -182,6 +215,64 @@ public class Building : MonoBehaviour
             }    
         }
         return -1;
+    }
+
+    /// <summary>
+    /// Simple helper used to check whether a neighbor slot is empty or occupied
+    /// </summary>
+    /// <param name="slotIndex">Index in mSlots of this slot</param>
+    /// <param name="dir">Cardinal direction of neighbor to be checked</param>
+    /// <returns></returns>
+    private NeighborState CheckNeighborSlots(int slotIndex)
+    {
+        bool leftN = false;
+        bool rightN = false;
+        bool upperN = false;
+
+        // check left neighbor
+        // if on the left edge, consider left neighbor empty, otherwise check
+        if (slotIndex % mBuildingWidth != 0)
+        {
+            BuildingSlot leftNeighborSlot = mSlots[slotIndex - 1].GetComponent<BuildingSlot>();
+            if (!leftNeighborSlot.IsSlotEmpty())
+                leftN = true;
+        }
+
+        // if on the right edge, consider right neighbor empty, otherwise check
+        if ((slotIndex) % mBuildingWidth != mBuildingWidth - 1)
+        {
+            BuildingSlot rightNeighborSlot = mSlots[slotIndex + 1].GetComponent<BuildingSlot>();
+            if (!rightNeighborSlot.IsSlotEmpty())
+                rightN = true;
+        }
+
+        // if on the top edge, consider upper neighbor empty
+        if (slotIndex < mBuildingWidth * (mBuildingHeight - 1))
+        {
+            BuildingSlot upperNeighborSlot = mSlots[slotIndex + mBuildingWidth].GetComponent<BuildingSlot>();
+            if (!upperNeighborSlot.IsSlotEmpty())
+                upperN = true;
+        }
+
+        if (!leftN && !rightN && !upperN)
+            return NeighborState.type0; // no neighbors
+        if (leftN && !rightN && !upperN)
+            return NeighborState.type1; // right edge
+        if (!leftN && !rightN && upperN)
+            return NeighborState.type2;
+        if (!leftN && rightN && upperN)
+            return NeighborState.type3;
+        if (leftN && !rightN && !upperN)
+            return NeighborState.type4; // left edge
+        if (leftN && rightN && !upperN)
+            return NeighborState.type5;
+        if (leftN && !rightN && upperN)
+            return NeighborState.type6;
+        if (leftN && rightN && upperN)
+            return NeighborState.type7;
+
+
+        return NeighborState.empty; // error if we got here.
     }
 
     #endregion

@@ -10,13 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2474db3c71685044b9c424747ad714f9, type: 3}
-  m_Name: LeftEdgeModule0
+  m_Name: ModuleType4_Door_0A
   m_EditorClassIdentifier: 
-  mModuleSet: {fileID: 11400000, guid: 62b342af03c64344a88d361d30e1b217, type: 2}
+  mModuleSet: {fileID: 0}
   mLeftNeightborModules: []
-  mRightNeightborModules:
-  - {fileID: 11400000, guid: 7dca94055ccb2234c8702a86fcd98f83, type: 2}
-  - {fileID: 11400000, guid: c038312550067004abd2531b3e0cb94a, type: 2}
+  mRightNeightborModules: []
   mUpperNeightborModules: []
   mLowerNeightborModules: []
-  mSprite: {fileID: 21300000, guid: e483744e12b25c44492d2b2c982aabd5, type: 3}
+  mSprite: {fileID: 21300000, guid: e6d5d68ff8b5c1f4ab14fab181efe831, type: 3}
