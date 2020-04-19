@@ -8,6 +8,10 @@ using UnityEngine;
 public class CritterSettings : ScriptableObject
 {
     public GameObject _critterPrefab;
+
+    public Sprite spriteEmoteHappy;
+    public Sprite spriteEmoteSad;
+
     public GameObject InstantiateCritterBehaviour(Vector3 pos, Quaternion rot)
     {
         return Instantiate(_critterPrefab, pos, rot);

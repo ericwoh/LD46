@@ -21,7 +21,7 @@ public class Building : MonoBehaviour
     private void OnEnable()
     {
         mSlots = new List<GameObject>(mBuildingWidth * mBuildingHeight);
-        
+
         // iterate through each slot and create a Slot prefab there
         for (int i = 0; i < mBuildingWidth; i++)
         {
@@ -36,6 +36,4 @@ public class Building : MonoBehaviour
             }
         }
     }
-
-
 }
