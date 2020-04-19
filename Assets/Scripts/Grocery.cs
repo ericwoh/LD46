@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.UI;
@@ -34,10 +35,14 @@ public class Grocery : MonoBehaviour
     JobManager _jobm;
     public JobSite _job;
 
+    Dictionary<RESOURCEK, int> _mpReskCRes;
+
     public int _width;
     public int _height;
     public int _iSlot;
     public int _iShelf;
+
+    GameObject _objUi;
 
     // Start is called before the first frame update
     void Start()
@@ -46,22 +51,36 @@ public class Grocery : MonoBehaviour
         _jobm = null;
 
         GameObject canvas = GameObject.Find("Canvas");
-        GameObject objUi = Instantiate(_grocuiPrefab, canvas.GetComponent<Transform>());
-        objUi.GetComponent<GroceryUi>().SetGrocery(this);
+        _objUi = Instantiate(_grocuiPrefab, canvas.GetComponent<Transform>());
+        _objUi.GetComponent<GroceryUi>().SetGrocery(this);
+
+        _mpReskCRes = new Dictionary<RESOURCEK, int>();
+        _mpReskCRes[RESOURCEK.Food] = 0;
+        _mpReskCRes[RESOURCEK.WarmBed] = 0;
+        _mpReskCRes[RESOURCEK.Work] = 0;
+
+        switch (_grock)
+        {
+            case GROCERYK.Milk: break;
+            case GROCERYK.Apples:
+                _mpReskCRes[RESOURCEK.Food] = 40;
+                break;
+            case GROCERYK.Broccoli:
+                _mpReskCRes[RESOURCEK.Food] = 100;
+                break;
+            case GROCERYK.Jar: break;
+            case GROCERYK.Eggs: break;
+        }
     }
 
-    static int CFoodInitialFromGrock(GROCERYK grock)
+    private void OnDestroy()
     {
-        switch (grock)
+        Destroy(_objUi);
+
+        if (_job != null)
         {
-            case GROCERYK.Milk:
-                return 10;
-
-            case GROCERYK.Apples:
-                return 0;
+            _jobm.RemoveJob(_job);
         }
-
-        return 0;
     }
 
     public static int CWorkRequiredFromGrock(GROCERYK grock)
@@ -69,10 +88,11 @@ public class Grocery : MonoBehaviour
         switch (grock)
         {
             case GROCERYK.Milk:
-                return 20;
-
             case GROCERYK.Apples:
-                return 20;
+            case GROCERYK.Broccoli:
+            case GROCERYK.Jar:
+            case GROCERYK.Eggs:
+                return 30;
         }
 
         return 0;
@@ -97,9 +117,12 @@ public class Grocery : MonoBehaviour
         switch (grock)
         {
             case GROCERYK.Milk:
-                return new List<DESIGNATIONK> { DESIGNATIONK.None, DESIGNATIONK.BuildHomes, DESIGNATIONK.CollectFood, DESIGNATIONK.StoreFood};
+            case GROCERYK.Jar:
+            case GROCERYK.Eggs:
+                return new List<DESIGNATIONK> { DESIGNATIONK.None, DESIGNATIONK.BuildHomes, DESIGNATIONK.StoreFood};
             case GROCERYK.Apples:
-                return new List<DESIGNATIONK> { DESIGNATIONK.None, DESIGNATIONK.BuildHomes, DESIGNATIONK.StoreFood };
+            case GROCERYK.Broccoli:
+                return new List<DESIGNATIONK> { DESIGNATIONK.None, DESIGNATIONK.CollectFood };
         }
 
         return new List<DESIGNATIONK> { DESIGNATIONK.None };
@@ -121,7 +144,7 @@ public class Grocery : MonoBehaviour
                     break;
                 case DESIGNATIONK.CollectFood:
                     _job = new JobSite(JOBK.CollectFood);
-                    _job._mpReskCRes[RESOURCEK.Food] = CFoodInitialFromGrock(_grock);
+                    _job._mpReskCRes[RESOURCEK.Food] = _mpReskCRes[RESOURCEK.Food];
                     break;
                 case DESIGNATIONK.BuildHomes:
                     _job = new JobSite(JOBK.Build);
@@ -185,6 +208,20 @@ public class Grocery : MonoBehaviour
 
         if (_job != null)
         {
+            switch (_job._jobk)
+            {
+                case JOBK.Build:
+                    break;
+                case JOBK.StoreFood:
+                    _mpReskCRes[RESOURCEK.Food] = _job._mpReskCRes[RESOURCEK.Food];
+                    break;
+                case JOBK.CollectFood:
+                    _mpReskCRes[RESOURCEK.Food] = _job._mpReskCRes[RESOURCEK.Food];
+                    break;
+                case JOBK.WarmHome:
+                    break;
+            }
+
             _jobm.RemoveJob(_job);
             _job = null;
         }
