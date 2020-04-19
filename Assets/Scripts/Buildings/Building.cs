@@ -23,10 +23,18 @@ public class Building : MonoBehaviour
     private int mLastModuleBuilt = 0;
     private int mEmptySlots;
 
+    [Tooltip("UI prefab to spawn on top of this object in UI space")]
+    public GameObject mUiPrefab;
+
     #region InternalMethods
     private void OnEnable()
     {
         mEmptySlots = mBuildingWidth * mBuildingHeight;
+
+        // spawn ui for buildings
+        GameObject canvas = GameObject.Find("Canvas");
+        Vector3 posScreen = Camera.main.WorldToScreenPoint(transform.position);
+        Instantiate(mUiPrefab, posScreen, new Quaternion(), canvas.GetComponent<Transform>());
 
         if (mSlots == null)
             mSlots = new List<GameObject>(mBuildingWidth * mBuildingHeight);
@@ -94,9 +102,6 @@ public class Building : MonoBehaviour
         float timeStarted = Time.time;
         while (!foundNextSlot)
         {
-            nextbuildSlot = Random.Range(0, mSlots.Count);
-            
-            // if this slot is empty check whether there's an empty slot below it
             if (mSlots[nextbuildSlot].GetComponent<BuildingSlot>().IsSlotEmpty())
             {
                 if (nextbuildSlot < mBuildingWidth)
