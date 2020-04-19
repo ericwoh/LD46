@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class DesignationButton : MonoBehaviour
 {
     public Grocery _grocTarget;
+    public GroceryUi _grocui;
     public DESIGNATIONK _desk;
 
     // Start is called before the first frame update
@@ -17,11 +18,12 @@ public class DesignationButton : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public void OnButtonClick()
     {
         _grocTarget.SetDesignation(_desk);
+        _grocui.Clear();
     }
 }
