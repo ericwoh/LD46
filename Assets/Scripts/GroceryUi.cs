@@ -73,7 +73,7 @@ public class GroceryUi : MonoBehaviour
             switch (_groc._job._jobk)
             {
                 case JOBK.Build:
-                    text.text += string.Format("Work: {0} / {1}", _groc._job._mpReskCRes[RESOURCEK.Work], Grocery.CWorkRequiredFromGrock(_groc._grock));
+                    text.text += string.Format("Work: {0}", _groc._job._mpReskCRes[RESOURCEK.Work]);
                     break;
                 case JOBK.WarmHome:
                     text.text += string.Format("Available Beds: {0}", _groc._job._mpReskCRes[RESOURCEK.WarmBed]);

@@ -86,7 +86,7 @@ public class Grocery : MonoBehaviour
         }
     }
 
-    public static int CWorkRequiredFromGrock(GROCERYK grock)
+    public static int CWorkRequiredPerSlotFromGrock(GROCERYK grock)
     {
         switch (grock)
         {
@@ -101,15 +101,16 @@ public class Grocery : MonoBehaviour
         return 0;
     }
 
-    public static int CWarmBedsFromGrock(GROCERYK grock)
+    public static int CWarmBedsPerSlotFromGrock(GROCERYK grock)
     {
         switch (grock)
         {
             case GROCERYK.Milk:
-                return 5;
-
             case GROCERYK.Apples:
-                return 5;
+            case GROCERYK.Broccoli:
+            case GROCERYK.Jar:
+            case GROCERYK.Eggs:
+                return 1;
         }
 
         return 0;
@@ -184,7 +185,7 @@ public class Grocery : MonoBehaviour
 
                     int cSlot = _objBuilding.GetComponent<Building>().NumSlots();
                     int cSlotMax = _objBuilding.GetComponent<Building>().NumSlotsMax();
-                    int cWorkRequiredPerSlot = CWorkRequiredFromGrock(_grock);
+                    int cWorkRequiredPerSlot = CWorkRequiredPerSlotFromGrock(_grock);
 
                     if (_job._mpReskCRes[RESOURCEK.Work] > (cSlot + 1) * cWorkRequiredPerSlot)
                     {
@@ -198,7 +199,7 @@ public class Grocery : MonoBehaviour
 
                         // we can have beds now!
                         _job = new JobSite(JOBK.WarmHome, transform);
-                        _job._mpReskCRes[RESOURCEK.WarmBed] = CWarmBedsFromGrock(_grock);
+                        _job._mpReskCRes[RESOURCEK.WarmBed] = CWarmBedsFromGrock(_grock) * cSlot;
                         _jobm.AddJob(_job);
                     }
                 }
