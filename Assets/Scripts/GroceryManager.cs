@@ -173,6 +173,10 @@ public class GroceryManager
                         obj.GetComponent<Grocery>().SetISlotAndIShelf(iSlot, shelf._iShelf);
                         shelf.AddGrocery(obj);
                     }
+                    else
+                    {
+                        break;
+                    }
                 }
                 else
                 {
