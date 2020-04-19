@@ -224,26 +224,5 @@ public class JobManager
 
     public void tick(float deltaTime)
     {
-        JobSite jobDel = null;
-        foreach (JobSite job in _lJob)
-        {
-            if (job._jobk == JOBK.Build)
-            {
-                if (job._mpReskCRes[RESOURCEK.Work] >= 20)
-                {
-                    jobDel = job;
-                    break;
-                }
-            }
-        }
-
-        if (jobDel != null)
-        {
-            _lJob.Remove(jobDel);
-
-            JobSite jobHousing = new JobSite(JOBK.WarmHome);
-            jobHousing._mpReskCRes[RESOURCEK.WarmBed] = 5;
-            _lJob.Add(jobHousing);
-        }
     }
 }
