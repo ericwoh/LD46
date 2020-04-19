@@ -72,7 +72,7 @@ public class GroceryUi : MonoBehaviour
             {
                 case JOBK.Build:
                     uFill = (float)_groc._job._mpReskCRes[RESOURCEK.Work] / (float)_groc._job._mpReskCResLimit[RESOURCEK.Work];
-                    color = new Color(0.7f, 0.5f, 0.2f);
+                    color = Color.HSVToRGB(18.0f / 360.0f, 0.6f, 0.6f);
                     break;
                 case JOBK.CollectFood:
                 case JOBK.StoreFood:
@@ -81,7 +81,7 @@ public class GroceryUi : MonoBehaviour
                     break;
                 case JOBK.WarmHome:
                     uFill = (float)_groc._job._mpReskCRes[RESOURCEK.WarmBed] / (float)_groc._job._mpReskCResLimit[RESOURCEK.WarmBed];
-                    color = new Color(0.6f, 0.6f, 0.1f);
+                    color = Color.HSVToRGB(33.0f / 360.0f, 0.87f, 0.89f);
                     break;
             }
 
