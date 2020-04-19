@@ -172,6 +172,7 @@ public class Grocery : MonoBehaviour
             }
 
             _jobm.AddJob(_job);
+            Debug.Log("Job Manager adding Job: ");
         }
 
         if (_desk == DESIGNATIONK.None)
@@ -245,6 +246,8 @@ public class Grocery : MonoBehaviour
                         // we can have beds now!
                         _job = new JobSite(JOBK.WarmHome, transform);
                         _job._mpReskCRes[RESOURCEK.WarmBed] = CWarmBedsPerSlotFromGrock(_grock) * cSlot;
+
+                        Debug.Log("Job Manager adding Job: ");
                         _jobm.AddJob(_job);
                     }
                 }

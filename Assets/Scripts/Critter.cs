@@ -11,6 +11,32 @@ class ShelfPosY
     public static float Shelf3 = 3.0f;
 }
 
+enum CritterStatType
+{
+    Hunger,
+    Warmth,
+    Lubrication,
+    Count
+}
+
+class CritterStats
+{
+    public float[] _values = new float [(int)CritterStatType.Count];
+    public CritterStats(CritterSettings settings) 
+    {
+        for (int i = 0; i < (int)CritterStatType.Count; ++i)
+        {
+            _values[i] = settings.statValueMax;
+        }
+    }
+}
+
+enum CritterState
+{
+    idleOrWorking,
+    
+}
+
 class Critter
 {
     public int _id;
@@ -20,18 +46,49 @@ class Critter
     public GameObject _sprite;
     public GameObject _emote;
 
-    public Critter(int id, GameObject sprite)
+    public CritterStats _stats;
+
+    public CritterSettings _settings;
+    public Critter(int id, Vector3 pos, CritterSettings settings)
     {
         _id = id;
         _sleepTimer = 0.0f;
         _sleepDuration = UnityEngine.Random.value * 3f + 1f;
         _tasks = new List<Task>();
-        _sprite = sprite;
-        _emote = sprite.transform.Find("emote").gameObject;
+        _sprite = settings.InstantiateCritterBehaviour(pos, Quaternion.identity);
+        _emote = _sprite.transform.Find("emote").gameObject;
+        _stats = new CritterStats(settings);
+        _settings = settings;
+        
+    }
+
+    public void cancelTasks()
+    {
+        foreach (Task task in _tasks)
+        {
+            task.CancelTask();
+        }
+        _tasks.Clear();
+    }
+
+    public bool isSatiated()
+    {
+        return _stats._values[(int)CritterStatType.Hunger] > _settings.statValueMin;
+    }
+    public bool isLubricated()
+    {
+        return _stats._values[(int)CritterStatType.Lubrication] > _settings.statValueMin;
+    }
+    public bool isWarm()
+    {
+        return _stats._values[(int)CritterStatType.Warmth] > _settings.statValueMin;
     }
 
     public void tick(float deltaTime)
     {
+        tickStats(deltaTime);
+
+        // tick position change
         if (_tasks.Count > 0)
         {
             Vector3 pos = _sprite.transform.position;
@@ -46,6 +103,7 @@ class Critter
                 return; // guard against the task being completed until critter gets to site
             }
         }
+
         _sleepTimer += deltaTime;
         if (_sleepTimer >= _sleepDuration)
         {
@@ -61,9 +119,43 @@ class Critter
         }
     }
 
-    public void setEmoteSprite(Sprite emote)
+    private void tickHunger(float deltaTime)
+    {
+        _stats._values[(int)CritterStatType.Hunger] -= deltaTime * _settings.hungerPerSecond;
+        //Debug.Log("Warmth: " + _stats._values[(int)CritterStatType.Hunger]);
+    }
+    private void tickLubrication(float deltaTime)
+    {
+        _stats._values[(int)CritterStatType.Lubrication] -= deltaTime * _settings.LubricationDecayPerSecond;
+    }
+    private void tickWarmth(float deltaTime)
+    {
+        _stats._values[(int)CritterStatType.Warmth] -= deltaTime * _settings.WarmthDecayPerSecond;
+    }
+
+    private void setEmoteSprite(Sprite emote)
     {
         _emote.GetComponent<SpriteRenderer>().sprite = emote;
+    }
+
+    private void tickStats(float deltaTime)
+    {
+        tickHunger(deltaTime);
+        tickLubrication(deltaTime);
+        tickWarmth(deltaTime);
+
+        if (!isSatiated())
+        {
+            setEmoteSprite(_settings.spriteEmoteHungry);
+        }
+        else if (!isLubricated())
+        {
+            setEmoteSprite(_settings.spriteEmoteDry);
+        }
+        else if (!isWarm()) 
+        {
+            setEmoteSprite(_settings.spriteEmoteCold);
+        }
     }
 }
 
@@ -74,18 +166,16 @@ public class Critters
         m_critterSettings = critterSettings;
         m_jobManager = jobManager;
         m_critters = new List<Critter>();
-        for (int i = 0; i < 15; ++i)
+        for (int i = 0; i < 1; ++i)
         {
-            AddCritter(new Vector3(i * 1.5f, ShelfPosY.Shelf1, 0), Quaternion.identity);
+            AddCritter(new Vector3(i * 1.5f, ShelfPosY.Shelf1, 0));
         }
     }
 
     // returns an integer handle that maps to the critter you farted out
-    public int AddCritter(Vector3 pos, Quaternion rot)
+    public int AddCritter(Vector3 pos)
     {
-        GameObject Sprite = m_critterSettings.InstantiateCritterBehaviour(pos, rot);
-        m_critters.Add(new Critter(++m_nextCritterId, Sprite));
-        m_critters[m_critters.Count - 1].setEmoteSprite(m_critterSettings.spriteEmoteHappy);
+        m_critters.Add(new Critter(++m_nextCritterId, pos, m_critterSettings));
         return m_nextCritterId;
     }
 
@@ -95,7 +185,22 @@ public class Critters
         {
             critter.tick(Time.deltaTime);
 
-            if (critter._tasks.Count == 0)
+            bool hasTasks = critter._tasks.Count > 0;
+            if (hasTasks)
+            {
+                Task task = critter._tasks[0];
+
+                // if we're starving and we're not actively eating food, drop what we're doing and try and find food
+                if (!critter.isSatiated() && task._taskk != TASKK.EatFood)
+                {
+                    critter.cancelTasks(); 
+                    if (m_jobManager.FTryFulfillNeed(NEEDK.Food, ref critter._tasks))
+                    {
+                        Debug.Log("EATING FOOD");
+                    }
+                }
+            }
+            else
             {
                 m_jobManager.FTryGetWork(ref critter._tasks, critter._sprite.transform.position.y);
             }
