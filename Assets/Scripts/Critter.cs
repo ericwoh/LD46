@@ -32,9 +32,9 @@ class Critter
 
     public void tick(float deltaTime)
     {
-
         if (_tasks.Count > 0)
         {
+            Vector3 pos = _sprite.transform.position;
             Task task = _tasks[0];
             float taskX = task._job._location.position.x;
             float critterX = pos.x;
