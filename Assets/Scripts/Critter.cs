@@ -41,6 +41,10 @@ class Critter
             float dirX = taskX - critterX;
             critterX += (dirX / Mathf.Abs(dirX)) * deltaTime * 2.0f;
             _sprite.transform.position = new Vector3(critterX, pos.y, pos.z);
+            if (Mathf.Approximately(critterX, taskX) == false)
+            {
+                return; // guard against the task being completed until critter gets to site
+            }
         }
         _sleepTimer += deltaTime;
         if (_sleepTimer >= _sleepDuration)
