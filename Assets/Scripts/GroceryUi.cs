@@ -64,8 +64,8 @@ public class GroceryUi : MonoBehaviour
             return;
 
         text.text = _groc._grock.ToString() + "\n";
-        text.text += "Designation: " + _groc._desk.ToString() + "\n";
-        text.text += "Current Job: ";
+        text.text += "Des: " + _groc._desk.ToString() + "\n";
+        text.text += "Job: ";
         if (_groc._job != null)
         {
             text.text += _groc._job._jobk.ToString() + "\n";
