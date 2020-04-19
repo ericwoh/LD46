@@ -64,10 +64,7 @@ class Critter
 
     public void cancelTasks()
     {
-        foreach (Task task in _tasks)
-        {
-            task.CancelTask();
-        }
+        Task.CancelTasks(_tasks);
         _tasks.Clear();
     }
 
