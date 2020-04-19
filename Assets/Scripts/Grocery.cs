@@ -19,9 +19,12 @@ public enum GROCERYK // tag = grock
 public enum DESIGNATIONK // tag = desk
 {
     None,
-    StoreFood,
+
     CollectFood,
+    StoreFood,
     BuildHomes,
+
+    Max,
 }
 
 public class Grocery : MonoBehaviour
@@ -156,10 +159,10 @@ public class Grocery : MonoBehaviour
             case GROCERYK.Milk:
             case GROCERYK.Jar:
             case GROCERYK.Eggs:
-                return new List<DESIGNATIONK> { DESIGNATIONK.None, DESIGNATIONK.BuildHomes, DESIGNATIONK.StoreFood};
+                return new List<DESIGNATIONK> { DESIGNATIONK.None, DESIGNATIONK.BuildHomes, DESIGNATIONK.StoreFood };
             case GROCERYK.Apples:
             case GROCERYK.Broccoli:
-                return new List<DESIGNATIONK> { DESIGNATIONK.None, DESIGNATIONK.CollectFood };
+                return new List<DESIGNATIONK> { DESIGNATIONK.None, DESIGNATIONK.CollectFood, DESIGNATIONK.BuildHomes, DESIGNATIONK.StoreFood };
         }
 
         return new List<DESIGNATIONK> { DESIGNATIONK.None };

@@ -161,12 +161,17 @@ public class GroceryUi : MonoBehaviour
                 lDesk.Remove(DESIGNATIONK.CollectFood);
         }
 
-        for (int iDesk = 0; iDesk < lDesk.Count; ++iDesk)
+        foreach (DESIGNATIONK desk in System.Enum.GetValues(typeof(DESIGNATIONK)))
         {
-            DESIGNATIONK desk = lDesk[iDesk];
-            float u = (float)iDesk / (float)lDesk.Count;
+            if (!lDesk.Contains(desk))
+                continue;
 
-            Vector3 vecOffset = new Vector3(Mathf.Sin(u * Mathf.PI * 2) * 100, Mathf.Cos(u * Mathf.PI * 2) * 50, 10.0f);
+            float u = (float)(desk - 1) / (float)(DESIGNATIONK.Max - 1);
+
+            Vector3 vecOffset = Vector3.zero;
+            if (desk != DESIGNATIONK.None)
+                vecOffset = new Vector3(Mathf.Sin(u * Mathf.PI * 2) * 110.0f, Mathf.Cos(u * Mathf.PI * 2) * 110.0f, 10.0f);
+
             Debug.Log(_prefabDesignationButton.GetComponent<DesignationButton>()._desk.ToString());
             
             GameObject canvas = GameObject.Find("Canvas");

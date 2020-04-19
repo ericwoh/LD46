@@ -67,12 +67,24 @@ public class Shelf
 
     public void RemoveRandomGroceries(int cGrocery)
     {
+        int cSkip = 0;
+
         for (int i = 0; i < cGrocery; ++i)
         {
             int iObjRemove = Random.Range(0, _lObjGrocery.Count);
             if (iObjRemove < _lObjGrocery.Count)
             {
                 GameObject obj = _lObjGrocery[iObjRemove];
+
+                if (cSkip < 3 && obj.GetComponent<Grocery>()._desk != DESIGNATIONK.None)
+                {
+                    // Try and avoid nuking things the player is using, but only a little bit
+
+                    i--;
+                    cSkip++;
+                    continue;
+                }
+
                 Object.Destroy(obj);
                 _lObjGrocery.RemoveAt(iObjRemove);
             }

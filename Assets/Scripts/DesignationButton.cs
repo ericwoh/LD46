@@ -12,7 +12,25 @@ public class DesignationButton : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        GetComponentInChildren<Text>().text = _desk.ToString();
+
+        switch (_desk)
+        {
+            case DESIGNATIONK.None:
+                GetComponentInChildren<Text>().text = "Cancel";
+                break;
+
+            case DESIGNATIONK.BuildHomes:
+                GetComponentInChildren<Text>().text = "Make Homes";
+                break;
+
+            case DESIGNATIONK.CollectFood:
+                GetComponentInChildren<Text>().text = "Get Food";
+                break;
+
+            case DESIGNATIONK.StoreFood:
+                GetComponentInChildren<Text>().text = "Store Food";
+                break;
+        }
     }
 
     // Update is called once per frame
