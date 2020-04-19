@@ -142,13 +142,17 @@ public class JobManager
     }
 
     // If this returns true, the list of tasks is filled with instructions on work to do for the player
-    public bool FTryGetWork(ref List<Task> pLTask)
+    public bool FTryGetWork(ref List<Task> pLTask, float posY)
     {
         pLTask.Clear();
 
         JobSite jobPerformed = null;
         foreach (JobSite job in _lJob)
         {
+            if (job._location.position.y != posY)
+            {
+                continue;
+            }
             switch (job._jobk)
             {
                 case JOBK.CollectFood:

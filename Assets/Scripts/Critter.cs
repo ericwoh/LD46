@@ -4,6 +4,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+class ShelfPosY
+{
+    public const float Shelf1 = -7.0f;
+    public const float Shelf2 = -2.0f;
+    public static float Shelf3 = 3.0f;
+}
+
 class Critter
 {
     public int _id;
@@ -37,11 +44,11 @@ class Critter
             }
             else
             {
-                Vector3 pos = _sprite.transform.position;
-                float taskX = task._job._location.position.x;
-                float critterX = pos.x;
-                float newCritterX = Mathf.Lerp(critterX, taskX, deltaTime * 2.0f);
-                _sprite.transform.position = new Vector3(newCritterX, pos.y, pos.z);
+	            float taskX = task._job._location.position.x;
+	            float critterX = pos.x;
+	            float dirX = taskX - critterX;
+	            critterX += (dirX / Mathf.Abs(dirX)) * deltaTime * 2.0f;
+	            _sprite.transform.position = new Vector3(critterX, pos.y, pos.z);
             }
         }
         _sleepTimer += deltaTime;
@@ -74,7 +81,7 @@ public class Critters
         m_critters = new List<Critter>();
         for (int i = 0; i < 15; ++i)
         {
-            AddCritter(new Vector3(i * 1.5f, 3, 0), Quaternion.identity);
+            AddCritter(new Vector3(i * 1.5f, ShelfPosY.Shelf1, 0), Quaternion.identity);
         }
     }
 
@@ -95,7 +102,7 @@ public class Critters
 
             if (critter._tasks.Count == 0)
             {
-                m_jobManager.FTryGetWork(ref critter._tasks);
+                m_jobManager.FTryGetWork(ref critter._tasks, critter._sprite.transform.position.y);
             }
         }
     }
