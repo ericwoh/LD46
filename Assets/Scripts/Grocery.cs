@@ -183,6 +183,7 @@ public class Grocery : MonoBehaviour
                 case DESIGNATIONK.CollectFood:
                     _job = new JobSite(JOBK.CollectFood, transform);
                     _job._mpReskCRes[RESOURCEK.Food] = _mpReskCRes[RESOURCEK.Food];
+                    _job._mpReskCResLimit[RESOURCEK.Food] = _width * _height * CFoodPerSlotFromGrock(_grock);
                     break;
                 case DESIGNATIONK.BuildHomes:
                     _job = new JobSite(JOBK.Build, transform);

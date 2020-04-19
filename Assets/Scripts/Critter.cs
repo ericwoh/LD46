@@ -38,8 +38,7 @@ class Critter
             Task task = _tasks[0];
             if (task._job._location == null)
             {
-                foreach (Task taskOther in _tasks)
-                    taskOther.CancelTask();
+                Task.CancelTasks(_tasks);
                 _tasks.Clear();
             }
             else

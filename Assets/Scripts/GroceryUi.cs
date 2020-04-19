@@ -44,6 +44,11 @@ public class GroceryUi : MonoBehaviour
         RectTransform rtrans = GetComponent<RectTransform>();
         rtrans.position = Vector3.Lerp(posScreenLL, posScreenUR, 0.5f);
         rtrans.sizeDelta = new Vector2(posScreenUR.x - posScreenLL.x, posScreenUR.y - posScreenLL.y);
+
+        GameObject objBg = transform.Find("ResourceMeterBg").gameObject;
+        RectTransform rtransBg = objBg.GetComponent<RectTransform>();
+        rtransBg.position = new Vector2(Mathf.Lerp(posScreenLL.x, posScreenUR.x, 0.5f), posScreenLL.y - 20.0f);
+        rtransBg.sizeDelta = new Vector2(posScreenUR.x - posScreenLL.x - 10.0f, rtransBg.sizeDelta.y);
     }
 
     // Update is called once per frame
@@ -53,10 +58,53 @@ public class GroceryUi : MonoBehaviour
 
         GetComponent<Button>().interactable = !_grocm._fButtonsDisabled;
 
-        if (_fHovered && !_grocm._fButtonsDisabled)
+        if (_fHovered && !_grocm._fButtonsDisabled && _groc._desk == DESIGNATIONK.None)
             _tLastHover = Time.time;
 
         _groc.SetFade(Mathf.Clamp01((Time.time - _tLastHover) * 10.0f));
+
+        if (_groc._job != null)
+        {
+            Color color = Color.white;
+            float uFill = 1.0f;
+            switch (_groc._job._jobk)
+            {
+                case JOBK.Build:
+                    uFill = (float)_groc._job._mpReskCRes[RESOURCEK.Work] / (float)_groc._job._mpReskCResLimit[RESOURCEK.Work];
+                    color = new Color(0.7f, 0.5f, 0.2f);
+                    break;
+                case JOBK.CollectFood:
+                case JOBK.StoreFood:
+                    uFill = (float)_groc._job._mpReskCRes[RESOURCEK.Food] / (float)_groc._job._mpReskCResLimit[RESOURCEK.Food];
+                    color = new Color(0.4f, 0.7f, 0.2f);
+                    break;
+                case JOBK.WarmHome:
+                    uFill = (float)_groc._job._mpReskCRes[RESOURCEK.WarmBed] / (float)_groc._job._mpReskCResLimit[RESOURCEK.WarmBed];
+                    color = new Color(0.6f, 0.6f, 0.1f);
+                    break;
+            }
+
+            GameObject objFill = transform.Find("ResourceMeterFill").gameObject;
+            RectTransform rtransFill = objFill.GetComponent<RectTransform>();
+
+            GameObject objBg = transform.Find("ResourceMeterBg").gameObject;
+            RectTransform rtransBg = objBg.GetComponent<RectTransform>();
+            
+            objFill.GetComponent<Image>().enabled = true;
+            objFill.GetComponent<Image>().color = color;
+            objBg.GetComponent<Image>().enabled = true;
+
+            rtransFill.offsetMin = rtransBg.offsetMin;
+            rtransFill.offsetMax = new Vector3(Mathf.Lerp(rtransBg.offsetMin.x, rtransBg.offsetMax.x, uFill), rtransBg.offsetMax.y);
+        }
+        else
+        {
+            GameObject objFill = transform.Find("ResourceMeterFill").gameObject;
+            objFill.GetComponent<Image>().enabled = false;
+
+            GameObject objBg = transform.Find("ResourceMeterBg").gameObject;
+            objBg.GetComponent<Image>().enabled = false;
+        }
     }
 
     void DebugDrawText()
@@ -92,6 +140,9 @@ public class GroceryUi : MonoBehaviour
 
     public void OnButtonClick()
     {
+        if (_groc._desk != DESIGNATIONK.None)
+            return;
+
         RectTransform rtrans = GetComponent<RectTransform>();
 
         List<DESIGNATIONK> lDesk = Grocery.LDeskFromGrock(_groc._grock);

@@ -99,7 +99,6 @@ public class JobSite // tag = job
     public void GiveResource(RESOURCEK resk)
     {
         _mpReskCRes[resk]++;
-        _mpReskCResPending[resk]--;
     }
 }
 
