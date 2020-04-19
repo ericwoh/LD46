@@ -32,6 +32,12 @@ ExportedObj/
 *.opendb
 *.VC.db
 
+# Stupid fucking editor
+.vscode/
+
+# Render Pipe Settings
+ProjectSettings/URPProjectSettings.asset
+
 # Unity3D generated meta files
 *.pidb.meta
 *.pdb.meta
