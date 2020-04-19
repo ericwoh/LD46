@@ -44,7 +44,8 @@ class Critter
             }
             else
             {
-	            float taskX = task._job._location.position.x;
+                Vector3 pos = _sprite.transform.position;
+                float taskX = task._job._location.position.x;
 	            float critterX = pos.x;
 	            float dirX = taskX - critterX;
 	            critterX += (dirX / Mathf.Abs(dirX)) * deltaTime * 2.0f;

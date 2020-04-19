@@ -294,5 +294,11 @@ public class Grocery : MonoBehaviour
             _jobm.RemoveJob(_job);
             _job = null;
         }
+
+        if (_objBuilding != null)
+        {
+            Destroy(_objBuilding);
+            _objBuilding = null;
+        }
     }
 }
