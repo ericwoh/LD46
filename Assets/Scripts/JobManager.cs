@@ -4,12 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ShelfPos // tag = spos
-{
-    public int _iShelf; // index of shelf, 0 being the bottom shelf
-    public float _uPos; // 0..1 value, 0 being max left of shelf, 1 being full right
-}
-
 public enum JOBK // tag = jobk
 {
     WarmHome,
@@ -36,11 +30,11 @@ public enum NEEDK // tag = needk
 public class JobSite // tag = job
 {
     //public Grocery _grocery; // the grocery that created this job
-    public ShelfPos _spos; // where this job will take place
+    public Transform _location; // where this job will take place
     public Dictionary<RESOURCEK, int> _mpReskCRes; // a mapping of resource type to how many resources this jobsite has available
     public JOBK _jobk;
 
-    public JobSite(JOBK jobk)
+    public JobSite(JOBK jobk, Transform location)
     {
         _mpReskCRes = new Dictionary<RESOURCEK, int>();
         _mpReskCRes[RESOURCEK.Food] = 0;
@@ -48,6 +42,7 @@ public class JobSite // tag = job
         _mpReskCRes[RESOURCEK.Work] = 0;
 
         _jobk = jobk;
+        _location = location;
     }
 
     public bool FCanFulfillNeed(NEEDK needk)

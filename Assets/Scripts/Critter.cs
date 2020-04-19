@@ -25,6 +25,15 @@ class Critter
 
     public void tick(float deltaTime)
     {
+        if (_tasks.Count > 0)
+        {
+            Vector3 pos = _sprite.transform.position;
+            Task task = _tasks[0];
+            float taskX = task._job._location.position.x;
+            float critterX = pos.x;
+            float newCritterX = Mathf.Lerp(critterX, taskX, deltaTime * 2.0f);
+            _sprite.transform.position = new Vector3(newCritterX, pos.y, pos.z);
+        }
         _sleepTimer += deltaTime;
         if (_sleepTimer >= _sleepDuration)
         {
@@ -53,7 +62,7 @@ public class Critters
         m_critterSettings = critterSettings;
         m_jobManager = jobManager;
         m_critters = new List<Critter>();
-        for (int i = 0; i < 10; ++i)
+        for (int i = 0; i < 1; ++i)
         {
             AddCritter(new Vector3(i * 1.5f, 3, 0), Quaternion.identity);
         }
