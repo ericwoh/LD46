@@ -63,6 +63,8 @@ public class Shelf
         for (int i = 0; i < cGrocery; ++i)
         {
             int iObjRemove = Random.Range(0, _lObjGrocery.Count);
+            GameObject obj = _lObjGrocery[iObjRemove];
+            Object.Destroy(obj);
             _lObjGrocery.RemoveAt(iObjRemove);
         }
     }
