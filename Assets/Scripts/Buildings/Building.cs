@@ -21,10 +21,13 @@ public class Building : MonoBehaviour
     private float mSlotHeight = 1.0f;
 
     private int mLastModuleBuilt = 0;
+    private int mEmptySlots;
 
     #region InternalMethods
     private void OnEnable()
     {
+        mEmptySlots = mBuildingWidth * mBuildingHeight;
+
         if (mSlots == null)
             mSlots = new List<GameObject>(mBuildingWidth * mBuildingHeight);
         mModuleBuildOrder = new List<int>(mSlots.Count);
@@ -51,57 +54,67 @@ public class Building : MonoBehaviour
         int doorSlot = (int)(((mBuildingWidth * 0.5f) - 1));
         mSlots[doorSlot].GetComponent<BuildingSlot>().SetBuildingModule(mModuleSet.mDoorModule);
         mLastModuleBuilt = doorSlot;
+        mEmptySlots -= 1;
     }
     #endregion
 
     #region Public Methods
 
+    /// <summary>
+    /// Public method calls to have this building build a new module if not already full
+    /// </summary>
     public void BuildNewModule()
     {
+        if (mEmptySlots == 0)
+        {
+            Debug.Log("This building is full and can't build anymore modules");
+            return;
+        }
+
         Debug.Log("Building a new module in building " + gameObject);
         // select which slot to fill next based on what module was built last
         int nextSlot = SelectNextSlotToBuild();
-        if (nextSlot >= 0)
-        {
-
-        }
+        Debug.Assert(nextSlot >= 0);
+        mSlots[nextSlot].GetComponent<BuildingSlot>().SetBuildingModule(mModuleSet.mDoorModule);
+        mEmptySlots -= 1;
     }
 
+    /// <summary>
+    /// Randomly select a slot to build in as long as it's not empty below
+    /// </summary>
+    /// <returns></returns>
     private int SelectNextSlotToBuild()
     {
+        if (mEmptySlots == 0)
+            Debug.LogError("Attempted to build module in building that's already full.");
+
         bool foundNextSlot = false;
         int nextbuildSlot = mLastModuleBuilt;
 
+        float timeStarted = Time.time;
         while (!foundNextSlot)
         {
+            nextbuildSlot = Random.Range(0, mSlots.Count);
+            
+            // if this slot is empty check whether there's an empty slot below it
             if (mSlots[nextbuildSlot].GetComponent<BuildingSlot>().IsSlotEmpty())
-                return nextbuildSlot;
+            {
+                if (nextbuildSlot < mBuildingWidth)
+                    return nextbuildSlot;   // ground floor, good to build.
 
-            nextbuildSlot = Random.Range(0, mSlots.Count - 1);
+                // otherwise, make sure the slot below this isn't empty
+                int slotBelow = nextbuildSlot - mBuildingWidth;
+                if (mSlots[slotBelow].GetComponent<BuildingSlot>().IsSlotEmpty() == false)
+                    return nextbuildSlot;
+            }                
+
+            // watchdog timer
+            if (Time.time - timeStarted > 3.0f)
+            {
+                Debug.LogError("Took over 3 seconds to find an empty slot, something is broken.");
+                return -1;
+            }    
         }
-
-
-
-
-        // FALLBACK PLAN - built out from door
-        //// first try to build horizontally - check left and right
-        //int potentialModule = mLastModuleBuilt;
-        
-        //// check to its left if that's an option
-        //if ((potentialModule % mBuildingWidth) - 1 >= 0 &&
-        //    mSlots[potentialModule - 1].GetComponent<BuildingSlot>().IsSlotEmpty())
-        //{
-        //    return potentialModule - 1;
-        //}
-        //else if ((potentialModule % mBuildingWidth) + 1 <= mBuildingWidth &&
-        //    mSlots[potentialModule + 1].GetComponent<BuildingSlot>().IsSlotEmpty())
-        //{
-        //    return potentialModule + 1;
-        //}
-
-        // check above to see if that's an option
-
-        // -1 is error value, returned when no valid spot is found
         return -1;
     }
 
