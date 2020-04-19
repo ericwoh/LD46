@@ -42,7 +42,8 @@ public class Grocery : MonoBehaviour
     public int _iSlot;
     public int _iShelf;
 
-    GameObject _objUi;
+    GameObject _objUi = null;
+    GameObject _objBuilding = null;
 
     // Start is called before the first frame update
     void Start()
@@ -76,6 +77,8 @@ public class Grocery : MonoBehaviour
     private void OnDestroy()
     {
         Destroy(_objUi);
+        if (_objBuilding != null)
+            Destroy(_objBuilding);
 
         if (_job != null)
         {
@@ -92,7 +95,7 @@ public class Grocery : MonoBehaviour
             case GROCERYK.Broccoli:
             case GROCERYK.Jar:
             case GROCERYK.Eggs:
-                return 30;
+                return 3;
         }
 
         return 0;
@@ -168,7 +171,27 @@ public class Grocery : MonoBehaviour
             case DESIGNATIONK.BuildHomes:
                 if (_job._jobk == JOBK.Build)
                 {
-                    if (_job._mpReskCRes[RESOURCEK.Work] > CWorkRequiredFromGrock(_grock))
+                    GroceryManager grocm = GameObject.Find("Game Manager").GetComponent<Game>()._grocm;
+
+                    if (_objBuilding == null)
+                    {
+                        GameObject prefabBuildingType = grocm._lPrefabBuildingType[UnityEngine.Random.Range(0, grocm._lPrefabBuildingType.Count)];
+                        _objBuilding = Instantiate(prefabBuildingType, transform.position, transform.rotation, transform);
+                        _objBuilding.GetComponent<Building>().mBuildingWidth = _width;
+                        _objBuilding.GetComponent<Building>().mBuildingHeight = _height;
+                        _objBuilding.GetComponent<Building>().ClearAndRefresh();
+                    }
+
+                    int cSlot = _objBuilding.GetComponent<Building>().NumSlots();
+                    int cSlotMax = _objBuilding.GetComponent<Building>().NumSlotsMax();
+                    int cWorkRequiredPerSlot = CWorkRequiredFromGrock(_grock);
+
+                    if (_job._mpReskCRes[RESOURCEK.Work] > (cSlot + 1) * cWorkRequiredPerSlot)
+                    {
+                        _objBuilding.GetComponent<Building>().BuildNewModule();
+                    }
+
+                    if (_job._mpReskCRes[RESOURCEK.Work] > cSlotMax * cWorkRequiredPerSlot)
                     {
                         // done building!
                         _jobm.RemoveJob(_job);

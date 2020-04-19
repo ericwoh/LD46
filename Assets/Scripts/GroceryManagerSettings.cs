@@ -6,6 +6,8 @@ using UnityEngine;
 public class GroceryManagerSettings : ScriptableObject
 {
     public List<GameObject> _lPrefabGrocery;
+    public List<GameObject> _lPrefabBuildingType;
+
     public int _cShelf = 3;
     public int _cSlotPerShelf = 20;
 
