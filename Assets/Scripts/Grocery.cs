@@ -144,14 +144,14 @@ public class Grocery : MonoBehaviour
             switch (_desk)
             {
                 case DESIGNATIONK.StoreFood:
-                    _job = new JobSite(JOBK.StoreFood);
+                    _job = new JobSite(JOBK.StoreFood, transform);
                     break;
                 case DESIGNATIONK.CollectFood:
-                    _job = new JobSite(JOBK.CollectFood);
+                    _job = new JobSite(JOBK.CollectFood, transform);
                     _job._mpReskCRes[RESOURCEK.Food] = _mpReskCRes[RESOURCEK.Food];
                     break;
                 case DESIGNATIONK.BuildHomes:
-                    _job = new JobSite(JOBK.Build);
+                    _job = new JobSite(JOBK.Build, transform);
                     break;
             }
 
@@ -198,8 +198,8 @@ public class Grocery : MonoBehaviour
                         _jobm.RemoveJob(_job);
 
                         // we can have beds now!
-                        _job = new JobSite(JOBK.WarmHome);
-                        _job._mpReskCRes[RESOURCEK.WarmBed] = CWarmBedsPerSlotFromGrock(_grock) * cSlot;
+                        _job = new JobSite(JOBK.WarmHome, transform);
+                        _job._mpReskCRes[RESOURCEK.WarmBed] = CWarmBedsFromGrock(_grock) * cSlot;
                         _jobm.AddJob(_job);
                     }
                 }
