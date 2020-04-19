@@ -14,3 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _critterPrefab: {fileID: 7843177326428173500, guid: 819e58e48e4d1c24284788c5bf8fcbdd,
     type: 3}
+  spriteEmoteHappy: {fileID: -3059276508253513237, guid: d6c7a95386e1ce442bbc2f564fa499e7,
+    type: 3}
+  spriteEmoteSad: {fileID: -481230153887043302, guid: d6c7a95386e1ce442bbc2f564fa499e7,
+    type: 3}
