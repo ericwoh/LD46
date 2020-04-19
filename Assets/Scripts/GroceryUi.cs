@@ -7,6 +7,7 @@ public class GroceryUi : MonoBehaviour
 {
 
     public GameObject _prefabDesignationButton;
+    public bool _fDisableDebugText = true;
     Grocery _groc;
 
     List<GameObject> _lObjButton;
@@ -112,6 +113,12 @@ public class GroceryUi : MonoBehaviour
         Text text = GetComponent<Text>();
         if (text == null)
             return;
+
+        if (_fDisableDebugText)
+        {
+            text.text = "";
+            return;
+        }
 
         text.text = _groc._grock.ToString() + "\n";
         text.text += "Des: " + _groc._desk.ToString() + "\n";
