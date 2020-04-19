@@ -7,13 +7,12 @@ using UnityEngine.UI;
 
 public enum GROCERYK // tag = grock
 {
+    None,
     Milk,
-    Beer,
-    //Cheese,
-    //Veggies,
-    //Condiments,
-    //Fruit,
-    //Yogurt,
+    Apples,
+    Broccoli,
+    Jar,
+    Eggs,
 }
 
 public enum DESIGNATIONK // tag = desk
@@ -26,28 +25,29 @@ public enum DESIGNATIONK // tag = desk
 
 public class Grocery : MonoBehaviour
 {
-    public GameObject _prefabDesignationButton;
+    public GameObject _grocuiPrefab;
+
     public GROCERYK _grock;
     
     // Player will set this through UI, which will then control what JOBKs get set
     public DESIGNATIONK _desk;
     JobManager _jobm;
-    JobSite _job;
-
-    List<GameObject> _lObjButton;
+    public JobSite _job;
 
     public int _width;
+    public int _height;
     public int _iSlot;
     public int _iShelf;
 
     // Start is called before the first frame update
     void Start()
     {
-        //_desk = DESIGNATIONK.None;
         _job = null;
         _jobm = null;
 
-        _lObjButton = new List<GameObject>();
+        GameObject canvas = GameObject.Find("Canvas");
+        GameObject objUi = Instantiate(_grocuiPrefab, canvas.GetComponent<Transform>());
+        objUi.GetComponent<GroceryUi>().SetGrocery(this);
     }
 
     static int CFoodInitialFromGrock(GROCERYK grock)
@@ -57,83 +57,52 @@ public class Grocery : MonoBehaviour
             case GROCERYK.Milk:
                 return 10;
 
-            case GROCERYK.Beer:
+            case GROCERYK.Apples:
                 return 0;
         }
 
         return 0;
     }
 
-    static int CWorkRequiredFromGrock(GROCERYK grock)
+    public static int CWorkRequiredFromGrock(GROCERYK grock)
     {
         switch (grock)
         {
             case GROCERYK.Milk:
                 return 20;
 
-            case GROCERYK.Beer:
+            case GROCERYK.Apples:
                 return 20;
         }
 
         return 0;
     }
 
-    static int CWarmBedsFromGrock(GROCERYK grock)
+    public static int CWarmBedsFromGrock(GROCERYK grock)
     {
         switch (grock)
         {
             case GROCERYK.Milk:
                 return 5;
 
-            case GROCERYK.Beer:
+            case GROCERYK.Apples:
                 return 5;
         }
 
         return 0;
     }
 
-    static List<DESIGNATIONK> LDeskFromGrock(GROCERYK grock)
+    public static List<DESIGNATIONK> LDeskFromGrock(GROCERYK grock)
     {
         switch (grock)
         {
             case GROCERYK.Milk:
                 return new List<DESIGNATIONK> { DESIGNATIONK.None, DESIGNATIONK.BuildHomes, DESIGNATIONK.CollectFood, DESIGNATIONK.StoreFood};
-            case GROCERYK.Beer:
+            case GROCERYK.Apples:
                 return new List<DESIGNATIONK> { DESIGNATIONK.None, DESIGNATIONK.BuildHomes, DESIGNATIONK.StoreFood };
         }
 
         return new List<DESIGNATIONK> { DESIGNATIONK.None };
-    }
-
-    void DebugDrawText()
-    {
-        Text text = GetComponent<Text>();
-        if (text == null)
-            return;
-
-        text.text = _grock.ToString() + "\n\n";
-        text.text += "    Designation: " + _desk.ToString() + "\n";
-        text.text += "    Current Job: ";
-        if (_job != null)
-        {
-            text.text += _job._jobk.ToString() + "\n";
-
-            switch (_job._jobk)
-            {
-                case JOBK.Build:
-                    text.text += string.Format("    Work: {0} / {1}", _job._mpReskCRes[RESOURCEK.Work], CWorkRequiredFromGrock(_grock));
-                    break;
-                case JOBK.WarmHome:
-                    text.text += string.Format("    Available Beds: {0}", _job._mpReskCRes[RESOURCEK.WarmBed]);
-                    break;
-                case JOBK.CollectFood:
-                case JOBK.StoreFood:
-                    text.text += string.Format("    Food: {0}", _job._mpReskCRes[RESOURCEK.Food]);
-                    break;
-            }
-        }
-        else
-            text.text += "None\n";
     }
 
     // Update is called once per frame
@@ -142,8 +111,6 @@ public class Grocery : MonoBehaviour
         if (_jobm == null)
             _jobm = GameObject.Find("Game Manager").GetComponent<Game>()._jobManager;
 
-
-        DebugDrawText();
 
         if (_job == null && _desk != DESIGNATIONK.None)
         {
@@ -193,46 +160,6 @@ public class Grocery : MonoBehaviour
         }
     }
 
-    public void OnButtonClick()
-    {
-        RectTransform rtrans = GetComponent<RectTransform>(); 
-
-        List<DESIGNATIONK> lDesk = LDeskFromGrock(_grock);
-        for (int iDesk = 0; iDesk < lDesk.Count; ++iDesk)
-        {
-            DESIGNATIONK desk = lDesk[iDesk];
-            float u = (float)iDesk / (float)lDesk.Count;
-
-            Vector3 vecOffset = new Vector3(Mathf.Sin(u * Mathf.PI * 2), Mathf.Cos(u * Mathf.PI * 2), 0.0f) * 150;
-            Debug.Log(_prefabDesignationButton.GetComponent<DesignationButton>()._desk.ToString());
-            GameObject objButton = Instantiate(_prefabDesignationButton, rtrans.position + vecOffset, new Quaternion(), GetComponentInParent<Transform>());
-            DesignationButton desbtn = objButton.GetComponent<DesignationButton>();
-            desbtn._desk = desk;
-            desbtn._grocTarget = this;
-
-            _lObjButton.Add(objButton);
-        }
-
-        GetComponent<Button>().interactable = false;
-    }
-
-    public void SetDesignation(DESIGNATIONK desk)
-    {
-        _desk = desk;
-        foreach (GameObject obj in _lObjButton)
-        {
-            Destroy(obj);
-        }
-     
-        GetComponent<Button>().interactable = true;
-
-        if (_job != null)
-        {
-            _jobm.RemoveJob(_job);
-            _job = null;
-        }
-    }
-
     public void SetISlotAndIShelf(int iSlot, int iShelf)
     {
         _iSlot = iSlot;
@@ -250,5 +177,16 @@ public class Grocery : MonoBehaviour
         }
 
         GetComponent<Transform>().position = new Vector3(_iSlot - 7.5f, y, 10.0f);
+    }
+
+    public void SetDesignation(DESIGNATIONK desk)
+    {
+        _desk = desk;
+
+        if (_job != null)
+        {
+            _jobm.RemoveJob(_job);
+            _job = null;
+        }
     }
 }

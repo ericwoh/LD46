@@ -68,7 +68,7 @@ public class Shelf
         _lObjGrocery.Sort(
             delegate (GameObject objLhs, GameObject objRhs)
             {
-                return objRhs.GetComponent<Grocery>()._iSlot - objLhs.GetComponent<Grocery>()._iSlot;
+                return objLhs.GetComponent<Grocery>()._iSlot - objRhs.GetComponent<Grocery>()._iSlot;
             });
     }
 
@@ -91,6 +91,8 @@ public class GroceryManager
 
     float _tAddGroceries = 60.0f;
     float _tRemoveGroceries = 15.0f;
+
+    public bool _fButtonsDisabled = false;
 
     public GroceryManager(GroceryManagerSettings grocmsetting)
     {
@@ -123,8 +125,8 @@ public class GroceryManager
 
     static void Shuffle<T>(IList<T> list)
     {
-        for (var i = list.Count; i > 0; i--)
-            Swap(list, 0, Random.Range(i, list.Count));
+        for (var i = list.Count - 1; i > 0; i--)
+            Swap(list, 0, Random.Range(0, i));
     }
 
     static void Swap<T>(IList<T> list, int i, int j)
@@ -136,7 +138,8 @@ public class GroceryManager
 
     GameObject ObjCreateGroceryBySize(int width)
     {
-        Shuffle(_lPrefabGrocery);
+        if (_lPrefabGrocery.Count > 1)
+            Shuffle(_lPrefabGrocery);
 
         foreach (GameObject obj in _lPrefabGrocery)
         {
@@ -156,21 +159,25 @@ public class GroceryManager
         {
             int iSlot = 0;
             int width = 0;
-            if (shelf.FTryGetNextAvailableSlot(ref iSlot, ref width))
-            {
-                GameObject obj = ObjCreateGroceryBySize(width);
-                
-                // BB (ericw) Should we leave some empty space occasionally?
 
-                if (obj != null)
-                {
-                    obj.GetComponent<Grocery>().SetISlotAndIShelf(iSlot, shelf._iShelf);
-                    shelf.AddGrocery(obj);
-                }
-            }
-            else
+            while (true)
             {
-                break;
+                if (shelf.FTryGetNextAvailableSlot(ref iSlot, ref width))
+                {
+                    GameObject obj = ObjCreateGroceryBySize(width);
+                
+                    // BB (ericw) Should we leave some empty space occasionally?
+
+                    if (obj != null)
+                    {
+                        obj.GetComponent<Grocery>().SetISlotAndIShelf(iSlot, shelf._iShelf);
+                        shelf.AddGrocery(obj);
+                    }
+                }
+                else
+                {
+                    break;
+                }
             }
         }
     }
@@ -181,7 +188,7 @@ public class GroceryManager
         {
             // BB (ericw) Change this over time for difficulty?
 
-            shelf.RemoveRandomGroceries(Random.Range(0, 2));
+            shelf.RemoveRandomGroceries(Random.Range(0, 2)); 
         }
     }
 }
