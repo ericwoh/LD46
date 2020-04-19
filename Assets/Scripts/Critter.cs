@@ -32,24 +32,18 @@ class Critter
 
     public void tick(float deltaTime)
     {
-
         if (_tasks.Count > 0)
         {
+            Vector3 pos = _sprite.transform.position;
             Task task = _tasks[0];
-            if (task._job._location == null)
+            float taskX = task._job._location.position.x;
+            float critterX = pos.x;
+            float dirX = taskX - critterX;
+            critterX += (dirX / Mathf.Abs(dirX)) * deltaTime * 2.0f;
+            _sprite.transform.position = new Vector3(critterX, pos.y, pos.z);
+            if (Mathf.Approximately(critterX, taskX) == false)
             {
-                foreach (Task taskOther in _tasks)
-                    taskOther.CancelTask();
-                _tasks.Clear();
-            }
-            else
-            {
-                Vector3 pos = _sprite.transform.position;
-                float taskX = task._job._location.position.x;
-	            float critterX = pos.x;
-	            float dirX = taskX - critterX;
-	            critterX += (dirX / Mathf.Abs(dirX)) * deltaTime * 2.0f;
-	            _sprite.transform.position = new Vector3(critterX, pos.y, pos.z);
+                return; // guard against the task being completed until critter gets to site
             }
         }
         _sleepTimer += deltaTime;

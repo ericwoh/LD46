@@ -32,6 +32,9 @@ ExportedObj/
 *.opendb
 *.VC.db
 
+# Stupid fucking editor
+.vscode/
+
 # Unity3D generated meta files
 *.pidb.meta
 *.pdb.meta
