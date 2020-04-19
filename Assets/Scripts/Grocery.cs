@@ -62,15 +62,14 @@ public class Grocery : MonoBehaviour
 
         switch (_grock)
         {
-            case GROCERYK.Milk: break;
             case GROCERYK.Apples:
-                _mpReskCRes[RESOURCEK.Food] = 40;
-                break;
             case GROCERYK.Broccoli:
-                _mpReskCRes[RESOURCEK.Food] = 100;
+                _mpReskCRes[RESOURCEK.Food] = _width * _height * CFoodPerSlotFromGrock(_grock); ;
                 break;
-            case GROCERYK.Jar: break;
-            case GROCERYK.Eggs: break;
+            case GROCERYK.Milk:
+            case GROCERYK.Jar:
+            case GROCERYK.Eggs:
+                break;
         }
     }
 
@@ -116,6 +115,21 @@ public class Grocery : MonoBehaviour
         return 0;
     }
 
+    public static int CFoodPerSlotFromGrock(GROCERYK grock)
+    {
+        switch (grock)
+        {
+            case GROCERYK.Milk:
+            case GROCERYK.Apples:
+            case GROCERYK.Broccoli:
+            case GROCERYK.Jar:
+            case GROCERYK.Eggs:
+                return 5;
+        }
+
+        return 0;
+    }
+
     public static List<DESIGNATIONK> LDeskFromGrock(GROCERYK grock)
     {
         switch (grock)
@@ -145,6 +159,7 @@ public class Grocery : MonoBehaviour
             {
                 case DESIGNATIONK.StoreFood:
                     _job = new JobSite(JOBK.StoreFood, transform);
+                    _job._mpReskCResLimit[RESOURCEK.Food] = _width * _height * CFoodPerSlotFromGrock(_grock);
                     break;
                 case DESIGNATIONK.CollectFood:
                     _job = new JobSite(JOBK.CollectFood, transform);
@@ -152,6 +167,7 @@ public class Grocery : MonoBehaviour
                     break;
                 case DESIGNATIONK.BuildHomes:
                     _job = new JobSite(JOBK.Build, transform);
+                    _job._mpReskCResLimit[RESOURCEK.Work] = _width * _height * CWorkRequiredPerSlotFromGrock(_grock);
                     break;
             }
 
@@ -164,6 +180,29 @@ public class Grocery : MonoBehaviour
         switch (_desk)
         {
             case DESIGNATIONK.StoreFood:
+                {
+                    Debug.Assert(_job._jobk == JOBK.StoreFood);
+
+                    GroceryManager grocm = GameObject.Find("Game Manager").GetComponent<Game>()._grocm;
+
+                    if (_objBuilding == null)
+                    {
+                        GameObject prefabBuildingType = grocm._lPrefabBuildingType[UnityEngine.Random.Range(0, grocm._lPrefabBuildingType.Count)];
+                        _objBuilding = Instantiate(prefabBuildingType, transform.position, transform.rotation, transform);
+                        _objBuilding.GetComponent<Building>().mBuildingWidth = _width;
+                        _objBuilding.GetComponent<Building>().mBuildingHeight = _height;
+                        _objBuilding.GetComponent<Building>().ClearAndRefresh();
+                    }
+
+                    int cSlot = _objBuilding.GetComponent<Building>().NumSlots();
+                    int cSlotMax = _objBuilding.GetComponent<Building>().NumSlotsMax();
+                    int cFoodPerSlot = CFoodPerSlotFromGrock(_grock);
+
+                    if (_job._mpReskCRes[RESOURCEK.Food] >= (cSlot + 1) * cFoodPerSlot)
+                    {
+                        _objBuilding.GetComponent<Building>().BuildNewModule();
+                    }
+                }
                 break;
 
             case DESIGNATIONK.CollectFood:
@@ -192,14 +231,14 @@ public class Grocery : MonoBehaviour
                         _objBuilding.GetComponent<Building>().BuildNewModule();
                     }
 
-                    if (_job._mpReskCRes[RESOURCEK.Work] > cSlotMax * cWorkRequiredPerSlot)
+                    if (_job._mpReskCRes[RESOURCEK.Work] >= cSlotMax * cWorkRequiredPerSlot)
                     {
                         // done building!
                         _jobm.RemoveJob(_job);
 
                         // we can have beds now!
                         _job = new JobSite(JOBK.WarmHome, transform);
-                        _job._mpReskCRes[RESOURCEK.WarmBed] = CWarmBedsFromGrock(_grock) * cSlot;
+                        _job._mpReskCRes[RESOURCEK.WarmBed] = CWarmBedsPerSlotFromGrock(_grock) * cSlot;
                         _jobm.AddJob(_job);
                     }
                 }
