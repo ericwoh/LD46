@@ -38,8 +38,9 @@ class Critter
             Task task = _tasks[0];
             float taskX = task._job._location.position.x;
             float critterX = pos.x;
-            float newCritterX = Mathf.Lerp(critterX, taskX, deltaTime * 2.0f);
-            _sprite.transform.position = new Vector3(newCritterX, pos.y, pos.z);
+            float dirX = taskX - critterX;
+            critterX += (dirX / Mathf.Abs(dirX)) * deltaTime * 2.0f;
+            _sprite.transform.position = new Vector3(critterX, pos.y, pos.z);
         }
         _sleepTimer += deltaTime;
         if (_sleepTimer >= _sleepDuration)
