@@ -106,9 +106,9 @@ class Critter
                     else
                     {
                         if (pos.x > 0)
-                            xGoal = 10.0f;
+                            xGoal = 16.0f;
                         else
-                            xGoal = -9.0f;
+                            xGoal = -16.0f;
                     }
 
                     float dirX = xGoal - pos.x;
@@ -122,7 +122,7 @@ class Critter
 
                     pos.x += dX;
 
-                    if (Mathf.Approximately(pos.x, -9.0f) || Mathf.Approximately(pos.x, 10.0f))
+                    if (Mathf.Approximately(pos.x, -16.0f) || Mathf.Approximately(pos.x, 16.0f))
                     {
                         pos.y = posTask.y;
                     }

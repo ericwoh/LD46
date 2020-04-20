@@ -49,7 +49,7 @@ public class GroceryUi : MonoBehaviour
         GameObject objBg = transform.Find("ResourceMeterBg").gameObject;
         RectTransform rtransBg = objBg.GetComponent<RectTransform>();
         rtransBg.position = new Vector2(Mathf.Lerp(posScreenLL.x, posScreenUR.x, 0.5f), posScreenLL.y - 20.0f);
-        rtransBg.sizeDelta = new Vector2(posScreenUR.x - posScreenLL.x - 10.0f, rtransBg.sizeDelta.y);
+        rtransBg.sizeDelta = new Vector2(posScreenUR.x - posScreenLL.x - 15.0f * _groc._width, rtransBg.sizeDelta.y);
     }
 
     // Update is called once per frame

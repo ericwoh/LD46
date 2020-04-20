@@ -297,7 +297,7 @@ public class Grocery : MonoBehaviour
             case 2: y =  3.0f; break;
         }
 
-        GetComponent<Transform>().position = new Vector3(_iSlot - 7.5f, y, 10.0f);
+        GetComponent<Transform>().position = new Vector3(_iSlot - 12.5f, y, 10.0f);
     }
 
     public void SetDesignation(DESIGNATIONK desk)
