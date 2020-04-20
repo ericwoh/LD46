@@ -26,6 +26,6 @@ MonoBehaviour:
     type: 3}
   statValueMax: 10
   statValueMin: 3
-  hungerPerSecond: 1
+  hungerPerSecond: 0.25
   LubricationDecayPerSecond: 1
   WarmthDecayPerSecond: 1
