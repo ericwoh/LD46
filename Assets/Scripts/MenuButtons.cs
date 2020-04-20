@@ -12,6 +12,10 @@ public class MenuButtons : MonoBehaviour
     public void StartNewGame()
     {
         SceneManager.LoadScene("NewGame");
+
+        AudioSource audio = GetComponent<AudioSource>();
+        if (audio)
+            audio.Play();
     }
 
     /// <summary>
@@ -19,6 +23,10 @@ public class MenuButtons : MonoBehaviour
     /// </summary>
     public void QuitToDesktop()
     {
+        AudioSource audio = GetComponent<AudioSource>();
+        if (audio)
+            audio.Play();
+        
         #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
         #else
@@ -29,6 +37,9 @@ public class MenuButtons : MonoBehaviour
     public void ReturnToMainMenu()
     {
         SceneManager.LoadScene("MainMenu");
+        AudioSource audio = GetComponent<AudioSource>();
+        if (audio)
+            audio.Play();
     }
 
 }

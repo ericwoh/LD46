@@ -96,11 +96,6 @@ public class Building : MonoBehaviour
         // start each building with a front door module
 
         BuildNewModule();
-        //int doorSlot = (int)(((mBuildingWidth * 0.5f) - 1));
-        //mSlots[doorSlot].GetComponent<BuildingSlot>().SetBuildingModule(mModuleSet.mDoorModules[0]);
-        //mSlots[doorSlot].GetComponent<BuildingSlot>().mIsDoor = true;
-        //mLastModuleBuiltIndex = doorSlot;
-        //mEmptySlots -= 1;
     }
     #endregion
 
@@ -119,6 +114,7 @@ public class Building : MonoBehaviour
         }
 
         CameraShaker camShake = GetComponent<CameraShaker>();
+        AudioSource audio = GetComponent<AudioSource>();
 
         // special case - if it's the first module, make it a door.
         if (mEmptySlots == mBuildingWidth * mBuildingHeight)
@@ -132,6 +128,9 @@ public class Building : MonoBehaviour
             // add in little camera shake when building a new module
             if (camShake)
                 camShake.ShakeCamera();
+
+            if (audio)
+                audio.Play();
 
             return;
         }
@@ -154,6 +153,9 @@ public class Building : MonoBehaviour
         // add in little camera shake when building a new module
         if (camShake)
             camShake.ShakeCamera();
+
+        if (audio)
+            audio.Play();
 
         // update neighbor state for all slots to adjust module types if needed
         for (int i = 0; i < mSlots.Count; i++)
