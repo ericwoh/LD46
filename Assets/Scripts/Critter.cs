@@ -31,12 +31,6 @@ class CritterStats
     }
 }
 
-enum CritterState
-{
-    idleOrWorking,
-    
-}
-
 class Critter
 {
     public int _id;
@@ -48,7 +42,10 @@ class Critter
 
     public CritterStats _stats;
 
+    public int _foodHeld = 0;
+
     public CritterSettings _settings;
+
     public Critter(int id, Vector3 pos, CritterSettings settings)
     {
         _id = id;
@@ -59,7 +56,6 @@ class Critter
         _emote = _sprite.transform.Find("emote").gameObject;
         _stats = new CritterStats(settings);
         _settings = settings;
-        
     }
 
     public void cancelTasks()
@@ -130,18 +126,55 @@ class Critter
         }
     }
 
+    private void completeTask(Task task)
+    {
+        switch (task._taskk)
+        {
+            case TASKK.EatFood:
+            {
+                if (task._job.FTryClaimResource(RESOURCEK.Food))
+                {
+                    _stats._values[(int)CritterStatType.Hunger] += 1;
+                    Debug.Log("Eating food: " + _stats._values[(int)CritterStatType.Hunger]);
+                }
+                break;
+            }
+            case TASKK.CollectFood:
+            {
+                if (task._job.FTryClaimResource(RESOURCEK.Food))
+                {
+                    _foodHeld += 1;
+                }
+                break;
+            }
+
+            case TASKK.GetWarm:
+            {
+                break;
+            }
+            case TASKK.StoreFood:
+            case TASKK.Work:
+                break;
+        }
+    }
+
     private void tickHunger(float deltaTime)
     {
-        _stats._values[(int)CritterStatType.Hunger] -= deltaTime * _settings.hungerPerSecond;
-        //Debug.Log("Warmth: " + _stats._values[(int)CritterStatType.Hunger]);
+        float hunger = _stats._values[(int)CritterStatType.Hunger];
+        _stats._values[(int)CritterStatType.Hunger] = Mathf.Clamp(hunger - (deltaTime * _settings.hungerPerSecond), 0, _settings.statValueMax);
+        Debug.Log("Hunger: " + _stats._values[(int)CritterStatType.Hunger]);
     }
     private void tickLubrication(float deltaTime)
     {
-        _stats._values[(int)CritterStatType.Lubrication] -= deltaTime * _settings.LubricationDecayPerSecond;
+        float lube = _stats._values[(int)CritterStatType.Lubrication];
+        _stats._values[(int)CritterStatType.Lubrication] = Mathf.Clamp(lube - (deltaTime * _settings.LubricationDecayPerSecond), 0, _settings.statValueMax);
+        Debug.Log("Lube: " + _stats._values[(int)CritterStatType.Lubrication]);
     }
     private void tickWarmth(float deltaTime)
     {
-        _stats._values[(int)CritterStatType.Warmth] -= deltaTime * _settings.WarmthDecayPerSecond;
+        float warmth = _stats._values[(int)CritterStatType.Warmth];
+        _stats._values[(int)CritterStatType.Warmth] = Mathf.Clamp(warmth - (deltaTime * _settings.WarmthDecayPerSecond), 0, _settings.statValueMax);
+        Debug.Log("Warmth: " + _stats._values[(int)CritterStatType.Warmth]);
     }
 
     private void setEmoteSprite(Sprite emote)
@@ -157,6 +190,7 @@ class Critter
 
         if (!isSatiated())
         {
+            Debug.Log("Settings Srprite");
             setEmoteSprite(_settings.spriteEmoteHungry);
         }
         else if (!isLubricated())
@@ -205,10 +239,7 @@ public class Critters
                 if (!critter.isSatiated() && task._taskk != TASKK.EatFood)
                 {
                     critter.cancelTasks(); 
-                    if (m_jobManager.FTryFulfillNeed(NEEDK.Food, ref critter._tasks))
-                    {
-                        Debug.Log("EATING FOOD");
-                    }
+                    m_jobManager.FTryFulfillNeed(NEEDK.Food, ref critter._tasks);
                 }
             }
             else
