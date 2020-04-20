@@ -131,7 +131,7 @@ class Critter
 
                 _sprite.transform.position = pos;
 
-                if (!Mathf.Approximately(pos.x, posTask.x) && !Mathf.Approximately(pos.x, posTask.x))
+                if (!Mathf.Approximately(pos.x, posTask.x) || !Mathf.Approximately(pos.y, posTask.y))
                 {
                     return; // guard against the task being completed until critter gets to site
                 }
