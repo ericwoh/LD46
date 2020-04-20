@@ -16,13 +16,13 @@ MonoBehaviour:
     type: 3}
   spriteEmoteHappy: {fileID: -3059276508253513237, guid: d6c7a95386e1ce442bbc2f564fa499e7,
     type: 3}
-  spriteEmoteSad: {fileID: -680594573892070442, guid: d6c7a95386e1ce442bbc2f564fa499e7,
+  spriteEmoteSad: {fileID: -481230153887043302, guid: d6c7a95386e1ce442bbc2f564fa499e7,
     type: 3}
-  spriteEmoteHungry: {fileID: 1214507637993371801, guid: d6c7a95386e1ce442bbc2f564fa499e7,
+  spriteEmoteHungry: {fileID: -680594573892070442, guid: d6c7a95386e1ce442bbc2f564fa499e7,
     type: 3}
-  spriteEmoteDry: {fileID: 7304230229082254403, guid: d6c7a95386e1ce442bbc2f564fa499e7,
+  spriteEmoteDry: {fileID: 1214507637993371801, guid: d6c7a95386e1ce442bbc2f564fa499e7,
     type: 3}
-  spriteEmoteCold: {fileID: 3233723830286269547, guid: d6c7a95386e1ce442bbc2f564fa499e7,
+  spriteEmoteCold: {fileID: -3815640094294947485, guid: d6c7a95386e1ce442bbc2f564fa499e7,
     type: 3}
   statValueMax: 10
   statValueMin: 3

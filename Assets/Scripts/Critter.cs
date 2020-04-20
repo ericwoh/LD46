@@ -48,6 +48,8 @@ class Critter
     public bool _shouldMultiply = false;
     public bool _isDead = false;
 
+    float _tLastEmote = 0.0f;
+
     public CritterSettings _settings;
 
     public Critter(int id, Vector3 pos, CritterSettings settings)
@@ -153,6 +155,11 @@ class Critter
             }
             _sleepTimer = 0;
         }
+
+        if (Time.time - _tLastEmote > 2.0f)
+        {
+            _emote.GetComponent<SpriteRenderer>().sprite = null;
+        }
     }
 
     private void completeTask(Task task)
@@ -170,14 +177,18 @@ class Critter
                 Debug.Log("Eating food: " + _stats._values[(int)CritterStatType.Hunger]);
                 _stats._values[(int)CritterStatType.Hunger] += 10;
                 Debug.Log("Eating food: " + _stats._values[(int)CritterStatType.Hunger]);
+
+                setEmoteSprite(_settings.spriteEmoteHappy);
                 break;
             }
             case TASKK.GetWarm:
             {
                 _shouldMultiply = true;
                 _stats._values[(int)CritterStatType.Warmth] = 10;
+
+                setEmoteSprite(_settings.spriteEmoteDry);
                 break;
-            }
+                }
         }
     }
 
@@ -202,7 +213,11 @@ class Critter
 
     private void setEmoteSprite(Sprite emote)
     {
-        _emote.GetComponent<SpriteRenderer>().sprite = emote;
+        if (Time.time - _tLastEmote > 4.0f)
+        {
+            _emote.GetComponent<SpriteRenderer>().sprite = emote;
+            _tLastEmote = Time.time;
+        }
     }
 
     private void tickStats(float deltaTime)
