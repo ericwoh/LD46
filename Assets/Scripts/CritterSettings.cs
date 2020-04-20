@@ -12,6 +12,7 @@ public class CritterSettings : ScriptableObject
     public Sprite spriteEmoteHappy;
     public Sprite spriteEmoteSad;
     public Sprite spriteEmoteHungry;
+    public AudioClip audioClipEmote;
     public Sprite spriteEmoteDry;
     public Sprite spriteEmoteCold;
 
