@@ -141,6 +141,8 @@ class Critter
             {
                 Task task = _tasks[0];
                 _tasks.RemoveAt(0);
+
+                completeTask(task);
                 task.CompleteTask();
 
                 Debug.Log(_id + ": Completing " + task._taskk.ToString());
