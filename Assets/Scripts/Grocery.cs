@@ -177,19 +177,20 @@ public class Grocery : MonoBehaviour
 
         if (_job == null && _desk != DESIGNATIONK.None)
         {
+            Vector3 vecDoorOffset = new Vector3((int)(((_width * 0.5f) - 1)) + 0.5f, 0.0f, 0.0f);
             switch (_desk)
             {
                 case DESIGNATIONK.StoreFood:
-                    _job = new JobSite(JOBK.StoreFood, transform);
+                    _job = new JobSite(JOBK.StoreFood, transform, vecDoorOffset);
                     _job._mpReskCResLimit[RESOURCEK.Food] = _width * _height * CFoodPerSlotFromGrock(_grock);
                     break;
                 case DESIGNATIONK.CollectFood:
-                    _job = new JobSite(JOBK.CollectFood, transform);
+                    _job = new JobSite(JOBK.CollectFood, transform, vecDoorOffset);
                     _job._mpReskCRes[RESOURCEK.Food] = _mpReskCRes[RESOURCEK.Food];
                     _job._mpReskCResLimit[RESOURCEK.Food] = _width * _height * CFoodPerSlotFromGrock(_grock);
                     break;
                 case DESIGNATIONK.BuildHomes:
-                    _job = new JobSite(JOBK.Build, transform);
+                    _job = new JobSite(JOBK.Build, transform, vecDoorOffset);
                     _job._mpReskCResLimit[RESOURCEK.Work] = _width * _height * CWorkRequiredPerSlotFromGrock(_grock);
                     break;
             }
@@ -267,7 +268,8 @@ public class Grocery : MonoBehaviour
                         _jobm.RemoveJob(_job);
 
                         // we can have beds now!
-                        _job = new JobSite(JOBK.WarmHome, transform);
+                        Vector3 vecDoorOffset = new Vector3((int)(((_width * 0.5f) - 1)) + 0.5f, 0.0f, 0.0f);
+                        _job = new JobSite(JOBK.WarmHome, transform, vecDoorOffset);
                         _job._mpReskCRes[RESOURCEK.WarmBed] = CWarmBedsPerSlotFromGrock(_grock) * cSlot;
 
                         Debug.Log("Job Manager adding Job: ");

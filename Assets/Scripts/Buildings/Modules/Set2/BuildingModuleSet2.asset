@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4e8a1641c648e144b12e19b417e6a81, type: 3}
+  m_Name: BuildingModuleSet2
+  m_EditorClassIdentifier: 
+  mModuleTypeDescription: 'Module types:
+
+    Type0: No neighbors
+
+    Type1: Left
+    edge (only neighbor is to the right)
+
+    Type2: Middle with roof (only neighbor
+    is above)
+
+    Type3: L-shape. Neighbors to the right and top
+
+    Type4: Right
+    edge (only neighbor is to the left)
+
+    Type5: Middle tile, no top (neighbors
+    on right & left)
+
+    Type6: Reverse-L. Neighbors to the left and top
+
+    Type7:
+    Middle tile, neighbors on left, right, & top'
+  mDoorModules:
+  - {fileID: 11400000, guid: a7d9e954590fd914f8446c568ecd4e58, type: 2}
+  - {fileID: 11400000, guid: 00b593bbdba7f6b4ba7427a931de303c, type: 2}
+  - {fileID: 11400000, guid: adbdb31b87dc4fe4bb83da0954c45134, type: 2}
+  - {fileID: 11400000, guid: ef9cbab081cd03f478ca10e84ec149cd, type: 2}
+  - {fileID: 11400000, guid: cbcd47ee6d066914fb5ce82f8b950257, type: 2}
+  - {fileID: 11400000, guid: f6509b8d99b89414cb5a7530aac4df5d, type: 2}
+  - {fileID: 11400000, guid: 1d90295c0d343124b8dd0ceb29a4ef10, type: 2}
+  - {fileID: 11400000, guid: 8bddc9d0c8ecd6d48ad0ee8da6b8dde8, type: 2}
+  mType0Modules:
+  - {fileID: 11400000, guid: 1ad14cdf91fc6d54b9b5c28ec6b3e05a, type: 2}
+  mType1Modules:
+  - {fileID: 11400000, guid: eb77ddf45d0e2594880186d54f01c09f, type: 2}
+  mType2Modules:
+  - {fileID: 11400000, guid: 8d6fb9d0573ea4148ad88d7ae92f7551, type: 2}
+  mType3Modules:
+  - {fileID: 11400000, guid: 0929266b3d0798e4691a954b96f1c80c, type: 2}
+  mType4Modules:
+  - {fileID: 11400000, guid: 6598b7b46ba75e74eb5624bf29313d33, type: 2}
+  mType5Modules:
+  - {fileID: 11400000, guid: e7851562faaaaef4593653e6cebc6971, type: 2}
+  mType6Modules:
+  - {fileID: 11400000, guid: 33b2ad2bcf38d1d4e8ccff65ecccf83d, type: 2}
+  mType7Modules:
+  - {fileID: 11400000, guid: 5764acbd7e6b2e1449a6a32082af5903, type: 2}

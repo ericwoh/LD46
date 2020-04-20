@@ -19,13 +19,13 @@ public class BuildingModule : ScriptableObject
 
     private void OnEnable()
     {
-        if (mModuleSet)
-           mModuleSet.Add(this);
+        //if (mModuleSet)
+        //   mModuleSet.Add(this);
     }
 
     private void OnDisable()
     {
-        if (mModuleSet)
-            mModuleSet.Remove(this);
+        //if (mModuleSet)
+        //    mModuleSet.Remove(this);
     }
 }

@@ -6,7 +6,7 @@ using UnityEngine;
 /// WFC-generated buildings
 /// </summary>
 [CreateAssetMenu(menuName = "LD46/Building Module Set")]
-public class BuildingModuleSet : RuntimeSet<BuildingModule>
+public class BuildingModuleSet : ScriptableObject
 {
     #if UNITY_EDITOR
     [Tooltip("Description of each type of module")]

@@ -31,12 +31,13 @@ public class JobSite // tag = job
 {
     //public Grocery _grocery; // the grocery that created this job
     public Transform _location; // where this job will take place
+    public Vector3 _vecOffsetDoor;
     public Dictionary<RESOURCEK, int> _mpReskCRes; // a mapping of resource type to how many resources this jobsite has available
     public Dictionary<RESOURCEK, int> _mpReskCResPending; // 
     public Dictionary<RESOURCEK, int> _mpReskCResLimit; // maximum amount of resources
     public JOBK _jobk;
 
-    public JobSite(JOBK jobk, Transform location)
+    public JobSite(JOBK jobk, Transform location, Vector3 vecOffsetDoor)
     {
         _mpReskCRes = new Dictionary<RESOURCEK, int>();
         _mpReskCRes[RESOURCEK.Food] = 0;
@@ -55,6 +56,7 @@ public class JobSite // tag = job
 
         _jobk = jobk;
         _location = location;
+        _vecOffsetDoor = vecOffsetDoor;
     }
 
     public bool FCanFulfillNeed(NEEDK needk)
@@ -146,54 +148,66 @@ public class JobManager
         pLTask.Clear();
 
         JobSite jobPerformed = null;
-        foreach (JobSite job in _lJob)
+        for (int i = 0; i < 2; ++i)
         {
-            if (job._location.position.y != posY)
+            foreach (JobSite job in _lJob)
             {
-                continue;
-            }
-            switch (job._jobk)
-            {
-                case JOBK.CollectFood:
-                    break;
+                if (i == 0 && job._location.position.y != posY)
+                {
+                    continue;
+                }
 
-                case JOBK.WarmHome:
-                    break;
+                switch (job._jobk)
+                {
+                    case JOBK.CollectFood:
+                        break;
 
-                case JOBK.StoreFood:
-                    if (job._mpReskCRes[RESOURCEK.Food] + job._mpReskCResPending[RESOURCEK.Food] < job._mpReskCResLimit[RESOURCEK.Food])
-                    {
-                        foreach (JobSite jobOther in _lJob)
+                    case JOBK.WarmHome:
+                        break;
+
+                    case JOBK.StoreFood:
+                        if (job._mpReskCRes[RESOURCEK.Food] + job._mpReskCResPending[RESOURCEK.Food] < job._mpReskCResLimit[RESOURCEK.Food])
                         {
-                            if (jobOther._jobk == JOBK.CollectFood && jobOther.FHasResource(RESOURCEK.Food))
+                            for (int j = 0; j < 2; ++j)
                             {
-                                pLTask.Add(new Task(jobOther, TASKK.CollectFood));
-                                break;
+                                foreach (JobSite jobOther in _lJob)
+                                {
+                                    if (j == 0 && jobOther._location.position.y != posY)
+                                    {
+                                        continue;
+                                    }
+
+                                    if (jobOther._jobk == JOBK.CollectFood && jobOther.FHasResource(RESOURCEK.Food))
+                                    {
+                                        pLTask.Add(new Task(jobOther, TASKK.CollectFood));
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if (pLTask.Count > 0)
+                            {
+                                pLTask.Add(new Task(job, TASKK.StoreFood));
+                                job._mpReskCResPending[RESOURCEK.Food]++;
                             }
                         }
 
-                        if (pLTask.Count > 0)
+                        break;
+
+                    case JOBK.Build:
+                        if (job._mpReskCRes[RESOURCEK.Work] + job._mpReskCResPending[RESOURCEK.Work] < job._mpReskCResLimit[RESOURCEK.Work])
                         {
-                            pLTask.Add(new Task(job, TASKK.StoreFood));
-                            job._mpReskCResPending[RESOURCEK.Food]++;
+                            pLTask.Add(new Task(job, TASKK.Work));
+                            job._mpReskCResPending[RESOURCEK.Work]++;
                         }
-                    }
+                        break;
+                }
 
+                if (pLTask.Count != 0)
+                {
+                    jobPerformed = job;
                     break;
-
-                case JOBK.Build:
-                    if (job._mpReskCRes[RESOURCEK.Work] + job._mpReskCResPending[RESOURCEK.Work] < job._mpReskCResLimit[RESOURCEK.Work])
-                    {
-                        pLTask.Add(new Task(job, TASKK.Work));
-                        job._mpReskCResPending[RESOURCEK.Work]++;
-                    }
-                    break;
-            }
-
-            if (pLTask.Count != 0)
-            {
-                jobPerformed = job;
-                break;
+                }
             }
         }
 
