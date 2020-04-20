@@ -152,73 +152,62 @@ public class JobManager
         pLTask.Clear();
 
         JobSite jobPerformed = null;
-        for (int i = 0; i < 2; ++i)
+        foreach (JobSite job in _lJob)
         {
-            foreach (JobSite job in _lJob)
+            switch (job._jobk)
             {
-                if (i == 0 && job._location.position.y != posY)
-                {
-                    continue;
-                }
+                case JOBK.CollectFood:
+                    break;
 
-                switch (job._jobk)
-                {
-                    case JOBK.CollectFood:
-                        break;
+                case JOBK.WarmHome:
+                    break;
 
-                    case JOBK.WarmHome:
-                        break;
-
-                    case JOBK.StoreFood:
-                        if (job._mpReskCRes[RESOURCEK.Food] + job._mpReskCResPending[RESOURCEK.Food] < job._mpReskCResLimit[RESOURCEK.Food])
+                case JOBK.StoreFood:
+                    if (job._mpReskCRes[RESOURCEK.Food] + job._mpReskCResPending[RESOURCEK.Food] < job._mpReskCResLimit[RESOURCEK.Food])
+                    {
+                        for (int j = 0; j < 2; ++j)
                         {
-                            for (int j = 0; j < 2; ++j)
+                            foreach (JobSite jobOther in _lJob)
                             {
-                                foreach (JobSite jobOther in _lJob)
+                                if (j == 0 && jobOther._location.position.y != posY)
                                 {
-                                    if (j == 0 && jobOther._location.position.y != posY)
-                                    {
-                                        continue;
-                                    }
-
-                                    if (jobOther._jobk == JOBK.CollectFood && jobOther.FHasResource(RESOURCEK.Food))
-                                    {
-                                        pLTask.Add(new Task(jobOther, TASKK.CollectFood));
-                                        break;
-                                    }
+                                    continue;
                                 }
 
-                                if (pLTask.Count > 0)
+                                if (jobOther._jobk == JOBK.CollectFood && jobOther.FHasResource(RESOURCEK.Food))
+                                {
+                                    pLTask.Add(new Task(jobOther, TASKK.CollectFood));
                                     break;
+                                }
                             }
 
                             if (pLTask.Count > 0)
-                            {
-                                pLTask.Add(new Task(job, TASKK.StoreFood));
-                                job._mpReskCResPending[RESOURCEK.Food]++;
-                            }
+                                break;
                         }
 
-                        break;
-
-                    case JOBK.Build:
-                        if (job._mpReskCRes[RESOURCEK.Work] + job._mpReskCResPending[RESOURCEK.Work] < job._mpReskCResLimit[RESOURCEK.Work])
+                        if (pLTask.Count > 0)
                         {
-                            pLTask.Add(new Task(job, TASKK.Work));
-                            job._mpReskCResPending[RESOURCEK.Work]++;
+                            pLTask.Add(new Task(job, TASKK.StoreFood));
+                            job._mpReskCResPending[RESOURCEK.Food]++;
                         }
-                        break;
-                }
+                    }
 
-                if (pLTask.Count > 0)
-                {
-                    jobPerformed = job;
                     break;
-                }
+
+                case JOBK.Build:
+                    if (job._mpReskCRes[RESOURCEK.Work] + job._mpReskCResPending[RESOURCEK.Work] < job._mpReskCResLimit[RESOURCEK.Work])
+                    {
+                        pLTask.Add(new Task(job, TASKK.Work));
+                        job._mpReskCResPending[RESOURCEK.Work]++;
+                    }
+                    break;
             }
 
             if (pLTask.Count > 0)
+            {
+                jobPerformed = job;
                 break;
+            }
         }
 
         if (jobPerformed != null)
