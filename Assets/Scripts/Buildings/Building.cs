@@ -118,6 +118,8 @@ public class Building : MonoBehaviour
             return;
         }
 
+        CameraShaker camShake = GetComponent<CameraShaker>();
+
         // special case - if it's the first module, make it a door.
         if (mEmptySlots == mBuildingWidth * mBuildingHeight)
         {
@@ -126,6 +128,10 @@ public class Building : MonoBehaviour
             mSlots[doorSlot].GetComponent<BuildingSlot>().mIsDoor = true;
             mLastModuleBuiltIndex = doorSlot;
             mEmptySlots -= 1;
+
+            // add in little camera shake when building a new module
+            if (camShake)
+                camShake.ShakeCamera();
 
             return;
         }
@@ -144,6 +150,10 @@ public class Building : MonoBehaviour
         BuildingModule firstModule = mModuleSet.GetModuleOfType(neighbors);
         mSlots[nextSlot].GetComponent<BuildingSlot>().SetBuildingModule(firstModule);
         mEmptySlots -= 1;
+
+        // add in little camera shake when building a new module
+        if (camShake)
+            camShake.ShakeCamera();
 
         // update neighbor state for all slots to adjust module types if needed
         for (int i = 0; i < mSlots.Count; i++)
