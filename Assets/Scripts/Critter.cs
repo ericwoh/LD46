@@ -287,29 +287,22 @@ public class Critters
                 // if we're starving and we're not actively eating food, drop what we're doing and try and find food
                 if (!critter.isSatiated() && task._taskk != TASKK.EatFood)
                 {
-                    critter.cancelTasks(); 
                     m_jobManager.FTryFulfillNeed(NEEDK.Food, ref critter._tasks);
                 }
                 else if (critter.isSatiated() && !critter.isWarm() && task._taskk != TASKK.GetWarm && task._taskk != TASKK.Work)
                 {
-                    critter.cancelTasks(); 
                     m_jobManager.FTryFulfillNeed(NEEDK.Warmth, ref critter._tasks);
                 }
             }
+            else if (!critter.isSatiated() && m_jobManager.FTryFulfillNeed(NEEDK.Food, ref critter._tasks))
+            {
+            }
+            else if (!critter.isWarm() && m_jobManager.FTryFulfillNeed(NEEDK.Warmth, ref critter._tasks))
+            {
+            }
             else
             {
-                if (!critter.isSatiated())
-                {
-                    m_jobManager.FTryFulfillNeed(NEEDK.Food, ref critter._tasks);
-                }
-                else if (critter.isSatiated() && !critter.isWarm())
-                {
-                    m_jobManager.FTryFulfillNeed(NEEDK.Warmth, ref critter._tasks);
-                }
-                else
-                {
-                    m_jobManager.FTryGetWork(ref critter._tasks, critter._sprite.transform.position.y);
-                }
+                m_jobManager.FTryGetWork(ref critter._tasks, critter._sprite.transform.position.y);
             }
         }
 

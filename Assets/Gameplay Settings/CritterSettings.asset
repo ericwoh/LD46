@@ -18,12 +18,12 @@ MonoBehaviour:
     type: 3}
   spriteEmoteSad: {fileID: -481230153887043302, guid: d6c7a95386e1ce442bbc2f564fa499e7,
     type: 3}
-  spriteEmoteHungry: {fileID: -680594573892070442, guid: d6c7a95386e1ce442bbc2f564fa499e7,
+  spriteEmoteHungry: {fileID: -7361031184674315523, guid: d6c7a95386e1ce442bbc2f564fa499e7,
     type: 3}
   audioClipEmote: {fileID: 8300000, guid: e54b81f93adf58849b992820bc501a4c, type: 3}
   spriteEmoteDry: {fileID: 1214507637993371801, guid: d6c7a95386e1ce442bbc2f564fa499e7,
     type: 3}
-  spriteEmoteCold: {fileID: -3815640094294947485, guid: d6c7a95386e1ce442bbc2f564fa499e7,
+  spriteEmoteCold: {fileID: 7304230229082254403, guid: d6c7a95386e1ce442bbc2f564fa499e7,
     type: 3}
   statValueMax: 20
   statValueMin: 3
