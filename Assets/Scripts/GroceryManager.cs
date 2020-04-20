@@ -104,7 +104,10 @@ public class GroceryManager
     float _tAddGroceries = 60.0f;
     float _tRemoveGroceries = 15.0f;
 
+    int _cSlotPerShelf;
+
     public bool _fButtonsDisabled = false;
+    bool _fFirstTime = true;
 
     public GroceryManager(GroceryManagerSettings grocmsetting)
     {
@@ -117,12 +120,32 @@ public class GroceryManager
             _lShelf.Add(new Shelf(iShelf, grocmsetting._cSlotPerShelf));
         }
 
+        _cSlotPerShelf = grocmsetting._cSlotPerShelf;
+
         _tAddGroceries = grocmsetting._tAddGroceries;
         _tRemoveGroceries = grocmsetting._tRemoveGroceries;
     }
 
     public void tick()
     {
+        if (_fFirstTime)
+        {
+            // make sure the player at least gets a chance at some food
+
+            _fFirstTime = false;
+
+            foreach (Shelf shelf in _lShelf)
+            {
+                int cFood = Random.Range(0, 1);
+                for (int iFood = 0; iFood < cFood; ++iFood)
+                {
+                    GameObject obj = ObjCreateGroceryBySize(1000, true);
+                    obj.GetComponent<Grocery>().SetISlotAndIShelf(Random.Range(0, _cSlotPerShelf - obj.GetComponent<Grocery>()._width), shelf._iShelf);
+                    shelf.AddGrocery(obj);
+                }
+            }
+        }
+
         if (Time.time - _tLastGroceryAdd > _tAddGroceries)
         {
             SpawnGroceries();
@@ -150,14 +173,28 @@ public class GroceryManager
         list[j] = temp;
     }
 
-    GameObject ObjCreateGroceryBySize(int width)
+    GameObject ObjCreateGroceryBySize(int width, bool fFoodOnly)
     {
         if (_lPrefabGrocery.Count > 1)
             Shuffle(_lPrefabGrocery);
 
         foreach (GameObject obj in _lPrefabGrocery)
         {
-            if (obj.GetComponent<Grocery>()._width <= width)
+            Grocery groc = obj.GetComponent<Grocery>();
+
+            if (fFoodOnly)
+            {
+                switch (groc._grock)
+                {
+                    case GROCERYK.Apples:
+                    case GROCERYK.Broccoli:
+                        break;
+                    default:
+                        continue;
+                }
+            }
+
+            if (groc._width <= width)
             {
                 GameObject objNew = Object.Instantiate(obj);
                 return objNew;
@@ -173,12 +210,11 @@ public class GroceryManager
         {
             int iSlot = 0;
             int width = 0;
-
             while (true)
             {
                 if (shelf.FTryGetNextAvailableSlot(ref iSlot, ref width))
                 {
-                    GameObject obj = ObjCreateGroceryBySize(width);
+                    GameObject obj = ObjCreateGroceryBySize(width, false);
 
                     if (obj != null)
                     {
