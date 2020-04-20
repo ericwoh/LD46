@@ -283,8 +283,9 @@ public class Critters
                     critter.cancelTasks(); 
                     m_jobManager.FTryFulfillNeed(NEEDK.Food, ref critter._tasks);
                 }
-                else if (critter.isSatiated() && !critter.isWarm() && task._taskk != TASKK.GetWarm)
+                else if (critter.isSatiated() && !critter.isWarm() && task._taskk != TASKK.GetWarm && task._taskk != TASKK.Work)
                 {
+                    critter.cancelTasks(); 
                     m_jobManager.FTryFulfillNeed(NEEDK.Warmth, ref critter._tasks);
                 }
             }
