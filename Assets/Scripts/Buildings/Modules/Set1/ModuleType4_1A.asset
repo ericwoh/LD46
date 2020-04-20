@@ -17,4 +17,4 @@ MonoBehaviour:
   mRightNeightborModules: []
   mUpperNeightborModules: []
   mLowerNeightborModules: []
-  mSprite: {fileID: 21300000, guid: 5405cd7f7438c3148a238066df000971, type: 3}
+  mSprite: {fileID: 21300000, guid: dfb33810188fe7a419e21eca9a3a8515, type: 3}
