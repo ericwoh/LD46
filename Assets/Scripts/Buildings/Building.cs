@@ -149,17 +149,24 @@ public class Building : MonoBehaviour
         for (int i = 0; i < mSlots.Count; i++)
         {
             BuildingSlot slot = mSlots[i].GetComponent<BuildingSlot>();
+
+            // if this slot is still empty, don't care about its neighbors yet
             if (slot.IsSlotEmpty())
                 continue;
 
-            slot.mModuleType = CheckNeighborSlots(i);
+            NeighborState nState = CheckNeighborSlots(i);
+
+            // if this slot's neighbors haven't changed, no need to update
+            if (nState == slot.mModuleType)
+                continue;
 
             if (slot.mModuleType != NeighborState.empty)
             {
+                slot.mModuleType = nState;
                 BuildingModule module = mModuleSet.GetModuleOfType(slot.mModuleType);
                 if (slot.mIsDoor)
                     slot.SetBuildingModule(mModuleSet.mDoorModules[(int)slot.mModuleType]);
-                else
+                else    
                     slot.SetBuildingModule(module);
             }            
         }

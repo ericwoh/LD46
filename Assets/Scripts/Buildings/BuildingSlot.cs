@@ -29,7 +29,7 @@ public class BuildingSlot : MonoBehaviour
     [Tooltip("Represents what module type is used here based on the neighbors")]
     public NeighborState mModuleType;
 
-    private BuildingModule mModule = null;
+    public BuildingModule mModule = null;
     public bool mIsDoor = false;
 
     public void SetBuildingModule(BuildingModule module)
