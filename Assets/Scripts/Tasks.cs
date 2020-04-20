@@ -63,6 +63,7 @@ public class Task // tag = task
                     break;
 
                 case TASKK.GetWarm:
+                    task._job.GiveResource(RESOURCEK.WarmBed);
                     break;
 
                 case TASKK.StoreFood:

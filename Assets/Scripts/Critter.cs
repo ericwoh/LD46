@@ -169,14 +169,14 @@ class Critter
             case TASKK.EatFood:
             {
                 _stats._values[(int)CritterStatType.Hunger] = _settings.statValueMax;
-                setEmoteSprite(_settings.spriteEmoteHappy);
+                setEmoteSprite(_settings.spriteEmoteHappy, true);
                 break;
             }
             case TASKK.GetWarm:
             {
                 _shouldMultiply = true;
                 _stats._values[(int)CritterStatType.Warmth] = _settings.statValueMax;
-                setEmoteSprite(_settings.spriteEmoteDry);
+                setEmoteSprite(_settings.spriteEmoteDry, true);
                 break;
                 }
         }
@@ -201,9 +201,9 @@ class Critter
         Debug.Log("Warmth: " + _stats._values[(int)CritterStatType.Warmth]);
     }
 
-    private void setEmoteSprite(Sprite emote)
+    private void setEmoteSprite(Sprite emote, bool fForce)
     {
-        if (Time.time - _tLastEmote > 4.0f)
+        if (fForce || Time.time - _tLastEmote > 4.0f)
         {
             _emote.GetComponent<SpriteRenderer>().sprite = emote;
             _tLastEmote = Time.time;
@@ -218,7 +218,7 @@ class Critter
 
         if (!isSatiated())
         {
-            setEmoteSprite(_settings.spriteEmoteHungry);
+            setEmoteSprite(_settings.spriteEmoteHungry, false);
             if (_stats._values[(int)CritterStatType.Hunger] <= 0)
             {
                 _isDead = true;
@@ -226,7 +226,7 @@ class Critter
         }
         else if (!isWarm()) 
         {
-            setEmoteSprite(_settings.spriteEmoteCold);
+            setEmoteSprite(_settings.spriteEmoteCold, false);
         }
     }
 }

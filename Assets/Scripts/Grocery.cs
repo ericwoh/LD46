@@ -281,6 +281,7 @@ public class Grocery : MonoBehaviour
                         Vector3 vecDoorOffset = new Vector3((int)(((_width * 0.5f) - 1)) + 0.5f, 0.0f, 0.0f);
                         _job = new JobSite(JOBK.WarmHome, transform, vecDoorOffset);
                         _job._mpReskCRes[RESOURCEK.WarmBed] = CWarmBedsPerSlotFromGrock(_grock) * cSlot;
+                        _job._mpReskCResLimit[RESOURCEK.WarmBed] = CWarmBedsPerSlotFromGrock(_grock) * cSlot;
 
                         Debug.Log("Job Manager adding Job: ");
                         _jobm.AddJob(_job);
