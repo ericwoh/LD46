@@ -60,11 +60,9 @@ public class Task // tag = task
             {
                 case TASKK.EatFood:
                 case TASKK.CollectFood:
-                    task._job.GiveResource(RESOURCEK.Food);
                     break;
 
                 case TASKK.GetWarm:
-                    task._job.GiveResource(RESOURCEK.WarmBed);
                     break;
 
                 case TASKK.StoreFood:
