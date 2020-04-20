@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using Unity.Mathematics;
 
 class ShelfPosY
 {
@@ -168,14 +169,14 @@ class Critter
         {
             case TASKK.EatFood:
             {
-                _stats._values[(int)CritterStatType.Hunger] = _settings.statValueMax;
+                _stats._values[(int)CritterStatType.Hunger] = _settings.statValueMax - UnityEngine.Random.value * 3.0f;
                 setEmoteSprite(_settings.spriteEmoteHappy, true);
                 break;
             }
             case TASKK.GetWarm:
             {
                 _shouldMultiply = true;
-                _stats._values[(int)CritterStatType.Warmth] = _settings.statValueMax;
+                _stats._values[(int)CritterStatType.Warmth] = _settings.statValueMax - UnityEngine.Random.value * 3.0f;
                 setEmoteSprite(_settings.spriteEmoteDry, true);
                 break;
                 }
