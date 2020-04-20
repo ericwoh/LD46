@@ -161,31 +161,23 @@ class Critter
         {
             case TASKK.EatFood:
             {
-                if (task._job.FTryClaimResource(RESOURCEK.Food))
-                {
-                    _stats._values[(int)CritterStatType.Hunger] += 1;
-                    Debug.Log("Eating food: " + _stats._values[(int)CritterStatType.Hunger]);
-                }
+                Debug.Log("Eating food: " + _stats._values[(int)CritterStatType.Hunger]);
+                Debug.Log("Eating food: " + _stats._values[(int)CritterStatType.Hunger]);
+                Debug.Log("Eating food: " + _stats._values[(int)CritterStatType.Hunger]);
+                Debug.Log("Eating food: " + _stats._values[(int)CritterStatType.Hunger]);
+                Debug.Log("Eating food: " + _stats._values[(int)CritterStatType.Hunger]);
+                Debug.Log("Eating food: " + _stats._values[(int)CritterStatType.Hunger]);
+                Debug.Log("Eating food: " + _stats._values[(int)CritterStatType.Hunger]);
+                _stats._values[(int)CritterStatType.Hunger] += 10;
+                Debug.Log("Eating food: " + _stats._values[(int)CritterStatType.Hunger]);
                 break;
             }
-            case TASKK.CollectFood:
-            {
-                if (task._job.FTryClaimResource(RESOURCEK.Food))
-                {
-                    _foodHeld += 1;
-                }
-                break;
-            }
-
             case TASKK.GetWarm:
             {
                 _shouldMultiply = true;
                 _stats._values[(int)CritterStatType.Warmth] = 10;
                 break;
             }
-            case TASKK.StoreFood:
-            case TASKK.Work:
-                break;
         }
     }
 
@@ -286,15 +278,22 @@ public class Critters
                     critter.cancelTasks(); 
                     m_jobManager.FTryFulfillNeed(NEEDK.Food, ref critter._tasks);
                 }
-                else if (!critter.isWarm()&& task._taskk != TASKK.GetWarm)
-                {
-                    critter.cancelTasks(); 
-                    m_jobManager.FTryFulfillNeed(NEEDK.Warmth, ref critter._tasks);
-                }
+                // else if (!critter.isWarm()&& task._taskk != TASKK.GetWarm)
+                // {
+                //     critter.cancelTasks(); 
+                //     m_jobManager.FTryFulfillNeed(NEEDK.Warmth, ref critter._tasks);
+                // }
             }
             else
             {
-                m_jobManager.FTryGetWork(ref critter._tasks, critter._sprite.transform.position.y);
+                if (!critter.isSatiated())
+                {
+                    m_jobManager.FTryFulfillNeed(NEEDK.Food, ref critter._tasks);
+                }
+                else
+                {
+                    m_jobManager.FTryGetWork(ref critter._tasks, critter._sprite.transform.position.y);
+                }
             }
         }
 
