@@ -24,8 +24,8 @@ MonoBehaviour:
     type: 3}
   spriteEmoteCold: {fileID: 3233723830286269547, guid: d6c7a95386e1ce442bbc2f564fa499e7,
     type: 3}
-  statValueMax: 10
+  statValueMax: 20
   statValueMin: 3
   hungerPerSecond: 0.25
   LubricationDecayPerSecond: 1
-  WarmthDecayPerSecond: 1
+  WarmthDecayPerSecond: 0.5
