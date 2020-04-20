@@ -258,6 +258,8 @@ public class Critters
 
     public void tick(float deltaTime)
     {
+        List<Vector3> babies = new List<Vector3>();
+
         foreach (Critter critter in m_critters)
         {
             critter.tick(Time.deltaTime);
@@ -273,7 +275,7 @@ public class Critters
 
             if (critter._shouldMultiply)
             {
-                AddCritter(critter._sprite.transform.position);
+                babies.Add(critter._sprite.transform.position);
                 critter._shouldMultiply = false;
             }
 
@@ -310,6 +312,9 @@ public class Critters
                 }
             }
         }
+
+        foreach (Vector3 vec in babies)
+            AddCritter(vec);
 
         // remove dead critters
         m_critters.RemoveAll((x) => { return x._isDead;});
