@@ -208,6 +208,7 @@ class Critter
         {
             _emote.GetComponent<SpriteRenderer>().sprite = emote;
             _tLastEmote = Time.time;
+            _sprite.GetComponent<AudioSource>().PlayOneShot(_settings.audioClipEmote);
         }
     }
 
