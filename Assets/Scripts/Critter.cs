@@ -97,42 +97,42 @@ class Critter
             }
             else
             {
-                float xGoal;
                 
                 Vector2 posTask = task._job._location.position + task._job._vecOffsetDoor;
 
-                if (Mathf.Approximately(pos.y, posTask.y))
-                {
-                    xGoal = posTask.x;
-                }
-                else
-                {
-                    if (pos.x > 0)
-                        xGoal = 10.0f;
-                    else
-                        xGoal = -9.0f;
-                }
-
-                float dirX = xGoal - pos.x;
-                float dX = Mathf.Sign(dirX) * deltaTime * 2.0f;
-                if (dX > Mathf.Abs(pos.x - xGoal))
-                {
-                    dX = Mathf.Sign(dX) * Mathf.Abs(pos.x - xGoal);
-                }
-
-                _sprite.GetComponent<SpriteRenderer>().flipX = dirX > 0.0f;
-
-                pos.x += dX;
-
-                if (Mathf.Approximately(pos.x, -9.0f) || Mathf.Approximately(pos.x, 10.0f))
-                {
-                    pos.y = posTask.y;
-                }
-
-                _sprite.transform.position = pos;
-
                 if (!Mathf.Approximately(pos.x, posTask.x) || !Mathf.Approximately(pos.y, posTask.y))
                 {
+                    float xGoal;
+                    if (Mathf.Approximately(pos.y, posTask.y))
+                    {
+                        xGoal = posTask.x;
+                    }
+                    else
+                    {
+                        if (pos.x > 0)
+                            xGoal = 10.0f;
+                        else
+                            xGoal = -9.0f;
+                    }
+
+                    float dirX = xGoal - pos.x;
+                    float dX = Mathf.Sign(dirX) * deltaTime * 2.0f;
+                    if (dX > Mathf.Abs(pos.x - xGoal))
+                    {
+                        dX = Mathf.Sign(dX) * Mathf.Abs(pos.x - xGoal);
+                    }
+
+                    _sprite.GetComponent<SpriteRenderer>().flipX = dirX > 0.0f;
+
+                    pos.x += dX;
+
+                    if (Mathf.Approximately(pos.x, -9.0f) || Mathf.Approximately(pos.x, 10.0f))
+                    {
+                        pos.y = posTask.y;
+                    }
+
+                    _sprite.transform.position = pos;
+
                     return; // guard against the task being completed until critter gets to site
                 }
             }
