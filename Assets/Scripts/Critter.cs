@@ -221,16 +221,11 @@ class Critter
 
         if (!isSatiated())
         {
-            Debug.Log("Settings Srprite");
             setEmoteSprite(_settings.spriteEmoteHungry);
             if (_stats._values[(int)CritterStatType.Hunger] <= 0)
             {
                 _isDead = true;
             }
-        }
-        else if (!isLubricated())
-        {
-            setEmoteSprite(_settings.spriteEmoteDry);
         }
         else if (!isWarm()) 
         {
