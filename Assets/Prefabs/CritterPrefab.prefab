@@ -128,7 +128,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8063994548149108475}
-  m_LocalRotation: {x: -0, y: -0, z: 0.002566929, w: 0.9999967}
+  m_LocalRotation: {x: -0, y: 0, z: -0.0046406183, w: 0.9999893}
   m_LocalPosition: {x: 0, y: 0.502, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -150,8 +150,8 @@ MonoBehaviour:
   m_LightType: 3
   m_BlendStyleIndex: 0
   m_FalloffIntensity: 0.5
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 0.31
+  m_Color: {r: 1, g: 0.9850379, b: 0.8537736, a: 1}
+  m_Intensity: 0.15
   m_LightVolumeOpacity: 0
   m_ApplyToSortingLayers: dfbbe661dd11d82ab5202ec5
   m_LightCookieSprite: {fileID: 0}
@@ -163,7 +163,7 @@ MonoBehaviour:
   m_PointLightInnerAngle: 360
   m_PointLightOuterAngle: 360
   m_PointLightInnerRadius: 0
-  m_PointLightOuterRadius: 1.7077649
+  m_PointLightOuterRadius: 1.8511255
   m_PointLightDistance: 3
   m_PointLightQuality: 1
   m_ShapeLightParametricSides: 5

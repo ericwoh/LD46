@@ -164,6 +164,8 @@ public class Grocery : MonoBehaviour
             case GROCERYK.Apples:
             case GROCERYK.Broccoli:
                 return new List<DESIGNATIONK> { DESIGNATIONK.None, DESIGNATIONK.CollectFood, DESIGNATIONK.BuildHomes, DESIGNATIONK.StoreFood };
+            case GROCERYK.Cauliflower:
+                return new List<DESIGNATIONK> { DESIGNATIONK.None, DESIGNATIONK.CollectFood, DESIGNATIONK.BuildHomes, DESIGNATIONK.StoreFood };
         }
 
         return new List<DESIGNATIONK> { DESIGNATIONK.None };
