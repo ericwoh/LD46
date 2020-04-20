@@ -50,6 +50,10 @@ public class GroceryUi : MonoBehaviour
         RectTransform rtransBg = objBg.GetComponent<RectTransform>();
         rtransBg.position = new Vector2(Mathf.Lerp(posScreenLL.x, posScreenUR.x, 0.5f), posScreenLL.y - 20.0f);
         rtransBg.sizeDelta = new Vector2(posScreenUR.x - posScreenLL.x - 15.0f * _groc._width, rtransBg.sizeDelta.y);
+
+        GameObject objSw = transform.Find("Stopwatch").gameObject;
+        RectTransform rtransSw = objSw.GetComponent<RectTransform>();
+        rtransSw.position = (Vector2)posScreenLL - new Vector2(0, 10.0f);
     }
 
     // Update is called once per frame
@@ -106,6 +110,9 @@ public class GroceryUi : MonoBehaviour
             GameObject objBg = transform.Find("ResourceMeterBg").gameObject;
             objBg.GetComponent<Image>().enabled = false;
         }
+
+        GameObject objSw = transform.Find("Stopwatch").gameObject;
+        objSw.GetComponent<Image>().enabled = _groc._tDying != -1.0f;
     }
 
     void DebugDrawText()
@@ -170,7 +177,7 @@ public class GroceryUi : MonoBehaviour
 
             Vector3 vecOffset = Vector3.zero;
             if (desk != DESIGNATIONK.None)
-                vecOffset = new Vector3(Mathf.Sin(u * Mathf.PI * 2) * 110.0f, Mathf.Cos(u * Mathf.PI * 2) * 110.0f, 10.0f);
+                vecOffset = new Vector3(Mathf.Sin(u * Mathf.PI * 2) * 75.0f, Mathf.Cos(u * Mathf.PI * 2) * 75.0f, 10.0f);
 
             Debug.Log(_prefabDesignationButton.GetComponent<DesignationButton>()._desk.ToString());
             

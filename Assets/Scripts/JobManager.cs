@@ -63,7 +63,6 @@ public class JobSite // tag = job
     {
         switch (_jobk)
         {
-            case JOBK.CollectFood:
             case JOBK.StoreFood:
                 if (needk == NEEDK.Food)
                     return _mpReskCRes[RESOURCEK.Food] > 0;
@@ -74,6 +73,7 @@ public class JobSite // tag = job
                     return _mpReskCRes[RESOURCEK.WarmBed] > 0;
                 return false;
 
+            case JOBK.CollectFood:
             case JOBK.Build:
                 return false;
         }
