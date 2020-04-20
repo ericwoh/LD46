@@ -8,12 +8,13 @@ using UnityEngine.UI;
 
 public enum GROCERYK // tag = grock
 {
-    None,
-    Milk,
-    Apples,
-    Broccoli,
-    Jar,
-    Eggs,
+    None = 0,
+    Milk = 1,
+    Apples = 2,
+    Broccoli = 3,
+    Cauliflower = 4,
+    Jar = 5,
+    Eggs = 6,
 }
 
 public enum DESIGNATIONK // tag = desk

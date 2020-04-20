@@ -149,7 +149,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de8dee074bc870e4bb1ee09b5f187cc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _grocmsettings: {fileID: 0}
+  _grocmsettings: {fileID: 11400000, guid: 5665c84774fe7b549b086d272f5e8838, type: 2}
   _critterSettings: {fileID: 11400000, guid: f566718a5bf06a84982297f3a4997a14, type: 2}
 --- !u!1 &156977552428344963
 GameObject:
