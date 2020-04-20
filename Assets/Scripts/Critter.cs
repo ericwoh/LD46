@@ -206,9 +206,12 @@ class Critter
     {
         if (fForce || Time.time - _tLastEmote > 4.0f)
         {
-            _emote.GetComponent<SpriteRenderer>().sprite = emote;
-            _tLastEmote = Time.time;
-            _sprite.GetComponent<AudioSource>().PlayOneShot(_settings.audioClipEmote);
+            if (_emote && _sprite)
+            {
+                _emote.GetComponent<SpriteRenderer>().sprite = emote;
+                _tLastEmote = Time.time;
+                _sprite.GetComponent<AudioSource>().PlayOneShot(_settings.audioClipEmote);
+            }
         }
     }
 
