@@ -97,18 +97,41 @@ class Critter
             }
             else
             {
-                float taskX = task._job._location.position.x;
-                float critterX = pos.x;
-                float dirX = taskX - critterX;
-                float dX = Mathf.Sign(dirX) * deltaTime * 2.0f;
-                if (dX > Mathf.Abs(critterX - taskX))
+                float xGoal;
+                
+                Vector2 posTask = task._job._location.position + task._job._vecOffsetDoor;
+
+                if (Mathf.Approximately(pos.y, posTask.y))
                 {
-                    dX = Mathf.Sign(dX) * Mathf.Abs(critterX - taskX);
+                    xGoal = posTask.x;
+                }
+                else
+                {
+                    if (pos.x > 0)
+                        xGoal = 10.0f;
+                    else
+                        xGoal = -9.0f;
                 }
 
-                critterX += dX;
-                _sprite.transform.position = new Vector3(critterX, pos.y, pos.z);
-                if (Mathf.Approximately(critterX, taskX) == false)
+                float dirX = xGoal - pos.x;
+                float dX = Mathf.Sign(dirX) * deltaTime * 2.0f;
+                if (dX > Mathf.Abs(pos.x - xGoal))
+                {
+                    dX = Mathf.Sign(dX) * Mathf.Abs(pos.x - xGoal);
+                }
+
+                _sprite.GetComponent<SpriteRenderer>().flipX = dirX > 0.0f;
+
+                pos.x += dX;
+
+                if (Mathf.Approximately(pos.x, -9.0f) || Mathf.Approximately(pos.x, 10.0f))
+                {
+                    pos.y = posTask.y;
+                }
+
+                _sprite.transform.position = pos;
+
+                if (!Mathf.Approximately(pos.x, posTask.x) && !Mathf.Approximately(pos.x, posTask.x))
                 {
                     return; // guard against the task being completed until critter gets to site
                 }
@@ -177,9 +200,9 @@ public class Critters
         m_critterSettings = critterSettings;
         m_jobManager = jobManager;
         m_critters = new List<Critter>();
-        for (int i = 0; i < 1; ++i)
+        for (int i = 0; i < 15; ++i)
         {
-            AddCritter(new Vector3(i * 1.5f, ShelfPosY.Shelf1, 0));
+            AddCritter(new Vector3(-8.0f + i * 1.5f, ShelfPosY.Shelf1, 0));
         }
     }
 
