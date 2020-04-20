@@ -63,7 +63,9 @@ public class GroceryUi : MonoBehaviour
 
         GetComponent<Button>().interactable = !_grocm._fButtonsDisabled;
 
-        if (_fHovered && !_grocm._fButtonsDisabled && _groc._desk == DESIGNATIONK.None)
+        bool fCanClick = _groc._desk == DESIGNATIONK.None || _groc._desk == DESIGNATIONK.StoreFood;
+
+        if (_fHovered && !_grocm._fButtonsDisabled && fCanClick)
             _tLastHover = Time.time;
 
         _groc.SetFade(Mathf.Clamp01((Time.time - _tLastHover) * 10.0f));
@@ -154,19 +156,22 @@ public class GroceryUi : MonoBehaviour
 
     public void OnButtonClick()
     {
-        if (_groc._desk != DESIGNATIONK.None)
+        bool fCanClick = _groc._desk == DESIGNATIONK.None || _groc._desk == DESIGNATIONK.StoreFood;
+        if (!fCanClick)
             return;
 
         RectTransform rtrans = GetComponent<RectTransform>();
 
         List<DESIGNATIONK> lDesk = Grocery.LDeskFromGrock(_groc._grock);
+        if (_groc._desk == DESIGNATIONK.StoreFood)
+            lDesk = new List<DESIGNATIONK> { DESIGNATIONK.None, DESIGNATIONK.CollectFood };
 
         // filter invalid designationks...
-        if (lDesk.Contains(DESIGNATIONK.CollectFood))
-        {
-            if (_groc._mpReskCRes[RESOURCEK.Food] <= 0)
-                lDesk.Remove(DESIGNATIONK.CollectFood);
-        }
+        //if (lDesk.Contains(DESIGNATIONK.CollectFood))
+        //{
+        //    if (_groc._mpReskCRes[RESOURCEK.Food] <= 0)
+        //        lDesk.Remove(DESIGNATIONK.CollectFood);
+        //}
 
         foreach (DESIGNATIONK desk in System.Enum.GetValues(typeof(DESIGNATIONK)))
         {
