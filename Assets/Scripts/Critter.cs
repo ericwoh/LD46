@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 class ShelfPosY
 {
@@ -43,6 +44,9 @@ class Critter
     public CritterStats _stats;
 
     public int _foodHeld = 0;
+
+    public bool _shouldMultiply = false;
+    public bool _isDead = false;
 
     public CritterSettings _settings;
 
@@ -175,6 +179,8 @@ class Critter
 
             case TASKK.GetWarm:
             {
+                _shouldMultiply = true;
+                _stats._values[(int)CritterStatType.Warmth] = 10;
                 break;
             }
             case TASKK.StoreFood:
@@ -217,6 +223,10 @@ class Critter
         {
             Debug.Log("Settings Srprite");
             setEmoteSprite(_settings.spriteEmoteHungry);
+            if (_stats._values[(int)CritterStatType.Hunger] <= 0)
+            {
+                _isDead = true;
+            }
         }
         else if (!isLubricated())
         {
@@ -236,7 +246,7 @@ public class Critters
         m_critterSettings = critterSettings;
         m_jobManager = jobManager;
         m_critters = new List<Critter>();
-        for (int i = 0; i < 15; ++i)
+        for (int i = 0; i < 2; ++i)
         {
             AddCritter(new Vector3(-8.0f + i * 1.5f, ShelfPosY.Shelf1, 0));
         }
@@ -255,6 +265,21 @@ public class Critters
         {
             critter.tick(Time.deltaTime);
 
+            if (critter._isDead)
+            {
+                // play animation here
+                GameObject.Destroy(critter._sprite);
+                critter._sprite = null;
+                critter._emote = null;
+                continue;
+            }
+
+            if (critter._shouldMultiply)
+            {
+                AddCritter(critter._sprite.transform.position);
+                critter._shouldMultiply = false;
+            }
+
             bool hasTasks = critter._tasks.Count > 0;
             if (hasTasks)
             {
@@ -266,11 +291,25 @@ public class Critters
                     critter.cancelTasks(); 
                     m_jobManager.FTryFulfillNeed(NEEDK.Food, ref critter._tasks);
                 }
+                else if (!critter.isWarm()&& task._taskk != TASKK.GetWarm)
+                {
+                    critter.cancelTasks(); 
+                    m_jobManager.FTryFulfillNeed(NEEDK.Warmth, ref critter._tasks);
+                }
             }
             else
             {
                 m_jobManager.FTryGetWork(ref critter._tasks, critter._sprite.transform.position.y);
             }
+        }
+
+        // remove dead critters
+        m_critters.RemoveAll((x) => { return x._isDead;});
+
+        // end game if we have no more critters
+        if (m_critters.Count == 0)
+        {
+            SceneManager.LoadScene("GameOver");
         }
     }
 

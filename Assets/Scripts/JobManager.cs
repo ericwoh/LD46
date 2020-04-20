@@ -160,6 +160,7 @@ public class JobManager
                 switch (job._jobk)
                 {
                     case JOBK.CollectFood:
+                        pLTask.Add(new Task(job, TASKK.CollectFood));
                         break;
 
                     case JOBK.WarmHome:
