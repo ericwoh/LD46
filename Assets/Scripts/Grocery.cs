@@ -119,7 +119,7 @@ public class Grocery : MonoBehaviour
             case GROCERYK.Broccoli:
             case GROCERYK.Jar:
             case GROCERYK.Eggs:
-                return 3;
+                return 1;
         }
 
         return 0;
