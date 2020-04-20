@@ -128,10 +128,14 @@ public class JobManager
                 switch (needk)
                 {
                     case NEEDK.Food:
+                        Task.CancelTasks(pLTask);
+                        pLTask.Clear();
                         pLTask.Add(new Task(job, TASKK.EatFood));
                         break;
 
                     case NEEDK.Warmth:
+                        Task.CancelTasks(pLTask);
+                        pLTask.Clear();
                         pLTask.Add(new Task(job, TASKK.GetWarm));
                         break;
                 }
