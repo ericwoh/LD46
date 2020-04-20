@@ -311,7 +311,8 @@ public class Grocery : MonoBehaviour
 
     public void SetDesignation(DESIGNATIONK desk)
     {
-        _desk = desk;
+        if (desk != DESIGNATIONK.None)
+            _desk = desk;
 
         if (_job != null)
         {
@@ -333,11 +334,11 @@ public class Grocery : MonoBehaviour
             _job = null;
         }
 
-        if (_objBuilding != null)
-        {
-            Destroy(_objBuilding);
-            _objBuilding = null;
-        }
+        // if (_objBuilding != null)
+        // {
+        //     Destroy(_objBuilding);
+        //     _objBuilding = null;
+        // }
     }
 
     public void SetDying()

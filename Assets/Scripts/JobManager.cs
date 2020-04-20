@@ -160,7 +160,7 @@ public class JobManager
                 switch (job._jobk)
                 {
                     case JOBK.CollectFood:
-                        pLTask.Add(new Task(job, TASKK.CollectFood));
+                        //pLTask.Add(new Task(job, TASKK.CollectFood));
                         break;
 
                     case JOBK.WarmHome:
@@ -184,6 +184,9 @@ public class JobManager
                                         break;
                                     }
                                 }
+
+                                if (pLTask.Count > 0)
+                                    break;
                             }
 
                             if (pLTask.Count > 0)
@@ -204,12 +207,15 @@ public class JobManager
                         break;
                 }
 
-                if (pLTask.Count != 0)
+                if (pLTask.Count > 0)
                 {
                     jobPerformed = job;
                     break;
                 }
             }
+
+            if (pLTask.Count > 0)
+                break;
         }
 
         if (jobPerformed != null)
