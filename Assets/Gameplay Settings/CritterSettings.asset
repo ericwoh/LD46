@@ -20,6 +20,7 @@ MonoBehaviour:
     type: 3}
   spriteEmoteHungry: {fileID: -680594573892070442, guid: d6c7a95386e1ce442bbc2f564fa499e7,
     type: 3}
+  audioClipEmote: {fileID: 8300000, guid: acb988f3d3b90524488ac130e6e5057d, type: 3}
   spriteEmoteDry: {fileID: 1214507637993371801, guid: d6c7a95386e1ce442bbc2f564fa499e7,
     type: 3}
   spriteEmoteCold: {fileID: -3815640094294947485, guid: d6c7a95386e1ce442bbc2f564fa499e7,
