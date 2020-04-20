@@ -51,6 +51,8 @@ public class Grocery : MonoBehaviour
 
     Color _colorBase = Color.white;
 
+    public float _tDying = -1.0f;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -177,6 +179,11 @@ public class Grocery : MonoBehaviour
         if (_jobm == null)
             _jobm = GameObject.Find("Game Manager").GetComponent<Game>()._jobManager;
 
+        if (_tDying != -1.0f && Time.time - _tDying > 10.0f)
+        {
+            GroceryManager grocm = GameObject.Find("Game Manager").GetComponent<Game>()._grocm;
+            grocm.DestroyGrocery(gameObject);
+        }
 
         if (_job == null && _desk != DESIGNATIONK.None)
         {
@@ -331,5 +338,10 @@ public class Grocery : MonoBehaviour
             Destroy(_objBuilding);
             _objBuilding = null;
         }
+    }
+
+    public void SetDying()
+    {
+        _tDying = Time.time;
     }
 }

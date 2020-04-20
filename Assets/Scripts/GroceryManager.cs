@@ -85,8 +85,7 @@ public class Shelf
                     continue;
                 }
 
-                Object.Destroy(obj);
-                _lObjGrocery.RemoveAt(iObjRemove);
+                obj.GetComponent<Grocery>().SetDying();
             }
         }
     }
@@ -202,6 +201,18 @@ public class GroceryManager
         }
 
         return null;
+    }
+
+    public void DestroyGrocery(GameObject obj)
+    {
+        foreach (Shelf shelf in _lShelf)
+        {
+            if (shelf._lObjGrocery.Contains(obj))
+            {
+                shelf._lObjGrocery.Remove(obj);
+                Object.Destroy(obj);
+            }
+        }
     }
 
     void SpawnGroceries()
