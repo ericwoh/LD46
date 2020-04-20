@@ -1,5 +1,61 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!60 &8261319762244326255
+PolygonCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1923827194086838129}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.1, y: 0}
+    oldSize: {x: 6, y: 4}
+    newSize: {x: 6, y: 4}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Points:
+    m_Paths:
+    - - {x: 4.025, y: 0}
+      - {x: 4.3375, y: 0}
+      - {x: 5.15, y: 0.6875}
+      - {x: 5.15, y: 1.875}
+      - {x: 5.0875, y: 2.4375}
+      - {x: 4.525, y: 3.125}
+      - {x: 2.775, y: 3.125}
+      - {x: 2.025, y: 2.75}
+      - {x: 1.9000001, y: 3.125}
+      - {x: 0.4000001, y: 3.125}
+      - {x: -0.3499999, y: 2.4375}
+      - {x: -0.4124999, y: 2.3125}
+      - {x: -0.4124999, y: 1.125}
+      - {x: 0.4000001, y: 0}
+      - {x: 1.5875001, y: 0}
+      - {x: 1.7750001, y: 0.0625}
+      - {x: 2.3375, y: 0.1875}
+      - {x: 3.025, y: 0.4375}
+--- !u!114 &4469161511508087980
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1923827194086838129}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 058a209d18767a14281a644eb5d6352c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mOutlinedSprite: {fileID: 21300000, guid: 9237a532e6b80e641a3cc5abcaa094d1, type: 3}
 --- !u!1001 &7306374671248747028
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -100,3 +156,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f20f5258daef48f42aa97639d42cd1a5, type: 3}
+--- !u!1 &1923827194086838129 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9212037921416750437, guid: f20f5258daef48f42aa97639d42cd1a5,
+    type: 3}
+  m_PrefabInstance: {fileID: 7306374671248747028}
+  m_PrefabAsset: {fileID: 0}
